@@ -194,8 +194,25 @@ void playGame(int framesToMove) {
         all.shooting = false;
       }
     }
-    
-    if (cooldown == 45) {
+    for (int i2 = 0; i2 < barrier1.size(); i2++) {
+      BarrierPortion b = barrier1.get(i2);
+      if (b.hitPortion(a.x, a.y, a.w, a.h)) {
+        b.lives = 0;
+      }
+    }
+    for (int i2 = 0; i2 < barrier2.size(); i2++) {
+      BarrierPortion b = barrier2.get(i2);
+      if (b.hitPortion(a.x, a.y, a.w, a.h)) {
+        b.lives = 0;
+      }
+    }
+    for (int i2 = 0; i2 < barrier3.size(); i2++) {
+      BarrierPortion b = barrier3.get(i2);
+      if (b.hitPortion(a.x, a.y, a.w, a.h)) {
+        b.lives = 0;
+      }
+    }
+    if (cooldown == framesToMove) {
       a.moveAlien();
     }
   }
