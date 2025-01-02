@@ -2,6 +2,7 @@ Screen screen;
 ArrayList<Screen> prevScreen = new ArrayList<>();
 int cooldown = 0;
 int waitToSwitch = 0;
+int shootingCooldown = 0;
 ArrayList<BarrierPortion> barrier1 = new ArrayList<>();
 ArrayList<BarrierPortion> barrier2 = new ArrayList<>();
 ArrayList<BarrierPortion> barrier3 = new ArrayList<>();
@@ -22,7 +23,7 @@ public void setup() {
   pixelFont = createFont("slkscre.ttf", 75);
   textFont(pixelFont);
   screen = Screen.MAIN_MENU;
-  resetGame();
+  resetGame(true);
 } 
 public void draw() {
   background(0);
@@ -41,15 +42,15 @@ public void draw() {
       break;
 
     case EASY_LEVEL:
-      playGame(45);
+      playGame(45, 35);
       break;
 
     case MEDIUM_LEVEL:
-      backButton.drawButton();
+      playGame(40, 40);
       break;
 
     case HARD_LEVEL:
-      backButton.drawButton();
+      playGame(35, 45);
       break;
 
     case TWO_PLAYER_MODE:
@@ -61,7 +62,8 @@ public void draw() {
       text("GAME OVER", 600, 400, 10);
       waitToSwitch++;
       if (waitToSwitch == 180) {
-        screen = Screen.MAIN_MENU;
+        screen = prevScreen.get(prevScreen.size() - 1);
+        prevScreen.remove(prevScreen.size() - 1);
       }
       break;
     case VICTORY:
@@ -71,7 +73,8 @@ public void draw() {
       text("VICTORY", 600, 400, 10);
       waitToSwitch++;
       if (waitToSwitch == 180) {
-        screen = Screen.MAIN_MENU;
+        screen = prevScreen.get(prevScreen.size() - 1);
+        prevScreen.remove(prevScreen.size() - 1);
       }
       break;
     case DIFFICULTY:
@@ -89,8 +92,9 @@ public void draw() {
   
 }
 
-void resetGame() {
+void resetGame(boolean resetBarriers) {
   // removing all aliens from the list, assuming there are
+  shootingCooldown = 0;
   cooldown = 0;
   alienList.clear();
   alienLaserList.clear();
@@ -109,13 +113,15 @@ void resetGame() {
     }  
   }
   
-  for (int i = 0; i < 3; i++) {
-    for (int i2 = 0; i2 < 3; i2++) {
-    if (!(i == 1 && i2 == 2)) {
-        barrier1.add(new BarrierPortion(270 + i * 40, 570 + i2 * 30, 3));
-        barrier2.add(new BarrierPortion(570 + i * 40, 570 + i2 * 30, 3));
-        barrier3.add(new BarrierPortion(870 + i * 40, 570 + i2 * 30, 3));
-      } 
+  if (resetBarriers) {
+    for (int i = 0; i < 3; i++) {
+      for (int i2 = 0; i2 < 3; i2++) {
+      if (!(i == 1 && i2 == 2)) {
+          barrier1.add(new BarrierPortion(270 + i * 40, 570 + i2 * 30, 3));
+          barrier2.add(new BarrierPortion(570 + i * 40, 570 + i2 * 30, 3));
+          barrier3.add(new BarrierPortion(870 + i * 40, 570 + i2 * 30, 3));
+        } 
+      }
     }
   }
 }
@@ -144,6 +150,7 @@ void mousePressed() {
     }
   } catch(IndexOutOfBoundsException IGNOREME) {
   }
+  
   switch (screen) {
     case MAIN_MENU:
       if (playButton.activateButton(Screen.MAIN_MENU)) {
@@ -155,13 +162,22 @@ void mousePressed() {
       break;
 
     case EASY_LEVEL:
-      shooterLaserList.add(new ShooterLaser(shooter1.x, shooter1.y - shooter1.h/2 - shooter1.h/8));
+      if (shootingCooldown == 35) {
+        shooterLaserList.add(new ShooterLaser(shooter1.x, shooter1.y - shooter1.h/2 - shooter1.h/8));
+        shootingCooldown = 0;
+      }
       break;
-
     case MEDIUM_LEVEL:
+      if (shootingCooldown == 40) {
+        shooterLaserList.add(new ShooterLaser(shooter1.x, shooter1.y - shooter1.h/2 - shooter1.h/8));
+        shootingCooldown = 0;
+      }     
       break;
-
     case HARD_LEVEL:
+      if (shootingCooldown == 45) {
+        shooterLaserList.add(new ShooterLaser(shooter1.x, shooter1.y - shooter1.h/2 - shooter1.h/8));
+        shootingCooldown = 0;      
+      }
       break;
 
     case TWO_PLAYER_MODE:
@@ -174,15 +190,15 @@ void mousePressed() {
       
     case DIFFICULTY:
       if (easyButton.activateButton(Screen.DIFFICULTY)) {
-        resetGame();
+        resetGame(true);
         prevScreen.add(screen);
         screen = Screen.EASY_LEVEL;
       } else if (mediumButton.activateButton(Screen.DIFFICULTY)) {
-        resetGame();
+        resetGame(true);
         prevScreen.add(screen);
         screen = Screen.MEDIUM_LEVEL;
       } else if (hardButton.activateButton(Screen.DIFFICULTY)) {
-        resetGame();
+        resetGame(true);
         prevScreen.add(screen);
         screen = Screen.HARD_LEVEL;
       }
@@ -191,9 +207,11 @@ void mousePressed() {
   }  
 }
 
-void playGame(int framesToMove) {
+void playGame(int framesToMove, int shootingCooldown) {
   shooter1.drawShooter();
- 
+  if (shootingCooldown != this.shootingCooldown) {
+    this.shootingCooldown++;
+  }
   for (int i = 0; i < barrier1.size(); i++) {
     BarrierPortion b = barrier1.get(i);
     b.drawPortion();
@@ -211,7 +229,7 @@ void playGame(int framesToMove) {
   for (int i = 0; i < barrier3.size(); i++) {
     BarrierPortion b = barrier3.get(i);
     b.drawPortion();
-    if (b.lives == 0) {
+    if (b.lives == 0) { 
       barrier3.remove(i);
     }
   }
@@ -330,8 +348,7 @@ void playGame(int framesToMove) {
   }
   
   if (alienList.isEmpty()) {
-    waitToSwitch = 0;
-    screen = Screen.VICTORY;
+    resetGame(false);
   }
   // how long it takes for the aliens to move, affected by difficulty
   if (cooldown == framesToMove) {
