@@ -52,4 +52,13 @@ public class Button {
     }
   }
   
+  public boolean activateButton(Screen buttonScreen) {
+    // a shortcut so I don't need to call checkScreen() and mouseOverButton() everytime I create a new button
+    if (this.mouseOverButton() && this.checkScreen(buttonScreen)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  
 }

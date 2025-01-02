@@ -1,4 +1,5 @@
 Screen screen;
+ArrayList<Screen> prevScreen = new ArrayList<>();
 int cooldown = 0;
 int waitToSwitch = 0;
 ArrayList<BarrierPortion> barrier1 = new ArrayList<>();
@@ -11,7 +12,10 @@ Shooter shooter1 = new Shooter(600, 750, 75, 75/2);
 boolean moveDown = false;
 PFont pixelFont;
 Button playButton = new Button(600, 250, 200, 100, "PLAY");
-
+Button easyButton = new Button(600, 250, 200, 100, "EASY");
+Button mediumButton = new Button(600, 400, 250, 100, "MEDIUM");
+Button hardButton = new Button(600, 550, 200, 100, "HARD");
+Button backButton = new Button(1100, 750, 100, 50, "BACK");
 Button play = new Button(500, 500, 200, 100, "test");
 public void setup() {
   size(1200, 800);
@@ -41,9 +45,11 @@ public void draw() {
       break;
 
     case MEDIUM_LEVEL:
+      backButton.drawButton();
       break;
 
     case HARD_LEVEL:
+      backButton.drawButton();
       break;
 
     case TWO_PLAYER_MODE:
@@ -67,6 +73,16 @@ public void draw() {
       if (waitToSwitch == 180) {
         screen = Screen.MAIN_MENU;
       }
+      break;
+    case DIFFICULTY:
+      textAlign(CENTER);
+      fill(255);
+      textSize(75);
+      text("Select Difficulty", 600, 125, 10);
+      easyButton.drawButton();
+      mediumButton.drawButton();
+      hardButton.drawButton();
+      backButton.drawButton();
       break;
   }  
   
@@ -121,11 +137,18 @@ void keyPressed() {
 }
 
 void mousePressed() {
+  try {
+    if (backButton.activateButton(screen)) {
+      screen = prevScreen.get(prevScreen.size() - 1);
+      prevScreen.remove(prevScreen.size() - 1);
+    }
+  } catch(IndexOutOfBoundsException IGNOREME) {
+  }
   switch (screen) {
     case MAIN_MENU:
-      if (playButton.mouseOverButton() && playButton.checkScreen(Screen.MAIN_MENU)) {
-        resetGame();
-        screen = Screen.EASY_LEVEL;
+      if (playButton.activateButton(Screen.MAIN_MENU)) {
+        prevScreen.add(screen);
+        screen = Screen.DIFFICULTY;
       }
       break;
     case COSMETICS:
@@ -147,6 +170,22 @@ void mousePressed() {
       break;
       
     case VICTORY:
+      break;
+      
+    case DIFFICULTY:
+      if (easyButton.activateButton(Screen.DIFFICULTY)) {
+        resetGame();
+        prevScreen.add(screen);
+        screen = Screen.EASY_LEVEL;
+      } else if (mediumButton.activateButton(Screen.DIFFICULTY)) {
+        resetGame();
+        prevScreen.add(screen);
+        screen = Screen.MEDIUM_LEVEL;
+      } else if (hardButton.activateButton(Screen.DIFFICULTY)) {
+        resetGame();
+        prevScreen.add(screen);
+        screen = Screen.HARD_LEVEL;
+      }
       break;
       
   }  
