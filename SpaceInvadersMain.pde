@@ -3,6 +3,9 @@ ArrayList<Screen> prevScreen = new ArrayList<>();
 int cooldown = 0;
 int waitToSwitch = 0;
 int shootingCooldown = 0;
+int totalPoints;
+int pointsGained;
+float diffMult = 1;
 ArrayList<BarrierPortion> barrier1 = new ArrayList<>();
 ArrayList<BarrierPortion> barrier2 = new ArrayList<>();
 ArrayList<BarrierPortion> barrier3 = new ArrayList<>();
@@ -162,18 +165,21 @@ void mousePressed() {
       break;
 
     case EASY_LEVEL:
+      diffMult = 1;
       if (shootingCooldown == 35) {
         shooterLaserList.add(new ShooterLaser(shooter1.x, shooter1.y - shooter1.h/2 - shooter1.h/8));
         shootingCooldown = 0;
       }
       break;
     case MEDIUM_LEVEL:
+      diffMult = 1.25;
       if (shootingCooldown == 40) {
         shooterLaserList.add(new ShooterLaser(shooter1.x, shooter1.y - shooter1.h/2 - shooter1.h/8));
         shootingCooldown = 0;
       }     
       break;
     case HARD_LEVEL:
+      diffMult = 1.5;
       if (shootingCooldown == 45) {
         shooterLaserList.add(new ShooterLaser(shooter1.x, shooter1.y - shooter1.h/2 - shooter1.h/8));
         shootingCooldown = 0;      
@@ -319,6 +325,13 @@ void playGame(int framesToMove, int shootingCooldown) {
       Alien a = alienList.get(j);
   
       if (s.hitLaser(a.x, a.y, a.w, a.h)) {
+        if (a.type == "squid") {
+          pointsGained += int(40 * diffMult);
+        } else if (a.type == "crab") {
+          pointsGained += int(20 * diffMult);
+        } else if (a.type == "crab") {
+          pointsGained += int(10 * diffMult);
+        }
         shooterLaserList.remove(i);
         alienList.remove(j);
       }
