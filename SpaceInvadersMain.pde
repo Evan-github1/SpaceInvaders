@@ -26,7 +26,7 @@ public void setup() {
   pixelFont = createFont("slkscre.ttf", 75);
   textFont(pixelFont);
   screen = Screen.MAIN_MENU;
-  resetGame(true);
+  resetGame();
 } 
 public void draw() {
   background(0);
@@ -37,7 +37,7 @@ public void draw() {
       textAlign(CENTER);
       fill(255);
       textSize(75);
-      text("Space Invaders", 600, 125, 10);
+      text("Space Invaders", 600, 125);
       playButton.drawButton();
       break;
 
@@ -65,17 +65,7 @@ public void draw() {
       text("GAME OVER", 600, 400, 10);
       waitToSwitch++;
       if (waitToSwitch == 180) {
-        screen = prevScreen.get(prevScreen.size() - 1);
-        prevScreen.remove(prevScreen.size() - 1);
-      }
-      break;
-    case VICTORY:
-      textAlign(CENTER);
-      fill(255, 223, 0);
-      textSize(150);
-      text("VICTORY", 600, 400, 10);
-      waitToSwitch++;
-      if (waitToSwitch == 180) {
+        totalPoints += pointsGained;
         screen = prevScreen.get(prevScreen.size() - 1);
         prevScreen.remove(prevScreen.size() - 1);
       }
@@ -95,7 +85,41 @@ public void draw() {
   
 }
 
-void resetGame(boolean resetBarriers) {
+void resetGame() {
+  // removing all aliens from the list, assuming there are
+  shootingCooldown = 0;
+  cooldown = 0;
+  alienList.clear();
+  alienLaserList.clear();
+  shooterLaserList.clear();
+  pointsGained = 0;
+  // refreshing with new aliens
+  for (int i = 0; i < 5; i++) {
+    for (int i2 = 0; i2 < 11; i2++) {
+      
+      if (i == 0) {
+        alienList.add(new Alien(i2 * 100 + 50, i * 75 + 25, "squid"));
+      } else if (i == 1 || i == 2) {
+        alienList.add(new Alien(i2 * 100 + 50, i * 75 + 25, "crab"));
+      } else if (i == 3 || i == 4) {
+        alienList.add(new Alien(i2 * 100 + 50, i * 75 + 25, "octopus"));
+      }
+    }  
+  }
+  
+  for (int i = 0; i < 3; i++) {
+    for (int i2 = 0; i2 < 3; i2++) {
+    if (!(i == 1 && i2 == 2)) {
+        barrier1.add(new BarrierPortion(270 + i * 40, 570 + i2 * 30, 3));
+        barrier2.add(new BarrierPortion(570 + i * 40, 570 + i2 * 30, 3));
+        barrier3.add(new BarrierPortion(870 + i * 40, 570 + i2 * 30, 3));
+      } 
+    }
+  }
+}
+
+
+void renewGame() {
   // removing all aliens from the list, assuming there are
   shootingCooldown = 0;
   cooldown = 0;
@@ -114,18 +138,6 @@ void resetGame(boolean resetBarriers) {
         alienList.add(new Alien(i2 * 100 + 50, i * 75 + 25, "octopus"));
       }
     }  
-  }
-  
-  if (resetBarriers) {
-    for (int i = 0; i < 3; i++) {
-      for (int i2 = 0; i2 < 3; i2++) {
-      if (!(i == 1 && i2 == 2)) {
-          barrier1.add(new BarrierPortion(270 + i * 40, 570 + i2 * 30, 3));
-          barrier2.add(new BarrierPortion(570 + i * 40, 570 + i2 * 30, 3));
-          barrier3.add(new BarrierPortion(870 + i * 40, 570 + i2 * 30, 3));
-        } 
-      }
-    }
   }
 }
 
@@ -191,20 +203,17 @@ void mousePressed() {
     case GAME_OVER:
       break;
       
-    case VICTORY:
-      break;
-      
     case DIFFICULTY:
       if (easyButton.activateButton(Screen.DIFFICULTY)) {
-        resetGame(true);
+        resetGame();
         prevScreen.add(screen);
         screen = Screen.EASY_LEVEL;
       } else if (mediumButton.activateButton(Screen.DIFFICULTY)) {
-        resetGame(true);
+        resetGame();
         prevScreen.add(screen);
         screen = Screen.MEDIUM_LEVEL;
       } else if (hardButton.activateButton(Screen.DIFFICULTY)) {
-        resetGame(true);
+        resetGame();
         prevScreen.add(screen);
         screen = Screen.HARD_LEVEL;
       }
@@ -214,6 +223,9 @@ void mousePressed() {
 }
 
 void playGame(int framesToMove, int shootingCooldown) {
+  fill(255);
+  textSize(20);
+  text("Points: " + pointsGained, 1100, 750);
   shooter1.drawShooter();
   if (shootingCooldown != this.shootingCooldown) {
     this.shootingCooldown++;
@@ -329,7 +341,7 @@ void playGame(int framesToMove, int shootingCooldown) {
           pointsGained += int(40 * diffMult);
         } else if (a.type == "crab") {
           pointsGained += int(20 * diffMult);
-        } else if (a.type == "crab") {
+        } else if (a.type == "octopus") {
           pointsGained += int(10 * diffMult);
         }
         shooterLaserList.remove(i);
@@ -361,7 +373,7 @@ void playGame(int framesToMove, int shootingCooldown) {
   }
   
   if (alienList.isEmpty()) {
-    resetGame(false);
+    renewGame();
   }
   // how long it takes for the aliens to move, affected by difficulty
   if (cooldown == framesToMove) {

@@ -6,6 +6,5 @@ public enum Screen {
   HARD_LEVEL,
   TWO_PLAYER_MODE,
   GAME_OVER,
-  VICTORY,
   DIFFICULTY
 }
