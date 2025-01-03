@@ -20,7 +20,7 @@ Button easyButton = new Button(600, 250, 200, 100, "EASY");
 Button mediumButton = new Button(600, 400, 250, 100, "MEDIUM");
 Button hardButton = new Button(600, 550, 200, 100, "HARD");
 Button backButton = new Button(1100, 750, 100, 50, "BACK");
-Button play = new Button(500, 500, 200, 100, "test");
+Button cosmeticButton = new Button(600, 400, 300, 100, "COSMETICS");
 public void setup() {
   size(1200, 800);
   pixelFont = createFont("slkscre.ttf", 75);
@@ -39,9 +39,17 @@ public void draw() {
       textSize(75);
       text("Space Invaders", 600, 125);
       playButton.drawButton();
+      cosmeticButton.drawButton();
       break;
 
     case COSMETICS:
+      textAlign(CENTER);
+      fill(255);
+      textSize(75);
+      text("Cosmetics Shop", 600, 125);
+      textSize(20);
+      text("Total Points: " + totalPoints, 150, 750);
+      backButton.drawButton();
       break;
 
     case EASY_LEVEL:
@@ -49,11 +57,11 @@ public void draw() {
       break;
 
     case MEDIUM_LEVEL:
-      playGame(40, 40);
+      playGame(35, 40);
       break;
 
     case HARD_LEVEL:
-      playGame(35, 45);
+      playGame(30, 45);
       break;
 
     case TWO_PLAYER_MODE:
@@ -171,6 +179,9 @@ void mousePressed() {
       if (playButton.activateButton(Screen.MAIN_MENU)) {
         prevScreen.add(screen);
         screen = Screen.DIFFICULTY;
+      } else if (cosmeticButton.activateButton(Screen.MAIN_MENU)) {
+        prevScreen.add(screen);
+        screen = Screen.COSMETICS;
       }
       break;
     case COSMETICS:
@@ -332,7 +343,18 @@ void playGame(int framesToMove, int shootingCooldown) {
     ShooterLaser s = shooterLaserList.get(i);
     s.drawLaser();
     s.shoot();
-    
+    if (s.y - s.h/2 <= 0) {
+      shooterLaserList.remove(i);
+    }
+    if (int(random(1, 11)) == 1) {
+      s.particleList.add(new Particle(s.x, s.y));
+    }
+    for (int j = s.particleList.size() - 1; j >= 0; j--) {
+      s.particleList.get(j).drawParticle();
+      if (s.particleList.get(j).w <= 0 || s.particleList.get(j).h <= 0) {
+        s.particleList.remove(j);
+      }
+    }
     for (int j = alienList.size() - 1; j >= 0; j--) {
       Alien a = alienList.get(j);
   
