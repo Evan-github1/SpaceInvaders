@@ -1,11 +1,14 @@
 Screen screen;
-ArrayList<Screen> prevScreen = new ArrayList<>();
+HashMap<String, Boolean> cosmeticUnlocked = new HashMap<String, Boolean>();
 int cooldown = 0;
 int waitToSwitch = 0;
 int shootingCooldown = 0;
-int totalPoints = 0;
+int totalPoints = 2001;
 int pointsGained = 0;
 float diffMult = 1;
+boolean moveDown = false;
+PFont pixelFont;
+ArrayList<Screen> prevScreen = new ArrayList<>();
 ArrayList<BarrierPortion> barrier1 = new ArrayList<>();
 ArrayList<BarrierPortion> barrier2 = new ArrayList<>();
 ArrayList<BarrierPortion> barrier3 = new ArrayList<>();
@@ -13,21 +16,26 @@ ArrayList<Alien> alienList = new ArrayList<>();
 ArrayList<AlienLaser> alienLaserList = new ArrayList<>();
 ArrayList<ShooterLaser> shooterLaserList = new ArrayList<>();
 Shooter shooter1 = new Shooter(600, 750, 75, 75/2);
-boolean moveDown = false;
-PFont pixelFont;
 Button playButton = new Button(600, 250, 200, 100, "PLAY");
 Button easyButton = new Button(600, 250, 200, 100, "EASY");
 Button mediumButton = new Button(600, 400, 250, 100, "MEDIUM");
 Button hardButton = new Button(600, 550, 200, 100, "HARD");
 Button backButton = new Button(1100, 750, 100, 50, "BACK");
 Button cosmeticButton = new Button(600, 400, 300, 100, "COSMETICS");
+Button confettiBuyButton = new Button(300, 500, 300, 100, "2000");
+ShooterLaser demoLaser = new ShooterLaser(300, 400);
 public void setup() {
   size(1200, 800);
   pixelFont = createFont("slkscre.ttf", 75);
   textFont(pixelFont);
   screen = Screen.MAIN_MENU;
   resetGame();
+  cosmeticUnlocked.put("Confetti Trail", false);
+  demoLaser.dy = 0;
+  demoLaser.w *= 2.5;
+  demoLaser.h *= 2.5;
 } 
+
 public void draw() {
   background(0);
   cooldown++;
@@ -49,7 +57,23 @@ public void draw() {
       text("Cosmetics Shop", 600, 125);
       textSize(20);
       text("Total Points: " + totalPoints, 150, 750);
+      text("Confetti Laser Trail", 300, 350);
       backButton.drawButton();
+      
+      confettiBuyButton.drawButton();
+      demoLaser.drawLaser();
+      if (int(random(1, 16)) == 1) {
+        demoLaser.particleList.add(new Particle(demoLaser.x, demoLaser.y));
+      }
+      for (int j = demoLaser.particleList.size() - 1; j >= 0; j--) {
+        demoLaser.particleList.get(j).drawParticle();
+        if (demoLaser.particleList.get(j).w <= 0 || demoLaser.particleList.get(j).h <= 0) {
+          demoLaser.particleList.remove(j);
+        }
+      }
+      if (cosmeticUnlocked.get("Confetti Trail")) {
+        confettiBuyButton.text = "UNLOCKED";
+      }
       break;
 
     case EASY_LEVEL:
@@ -89,64 +113,6 @@ public void draw() {
       backButton.drawButton();
       break;
   }  
-  
-  
-}
-
-void resetGame() {
-  // removing all aliens from the list, assuming there are
-  shootingCooldown = 0;
-  cooldown = 0;
-  alienList.clear();
-  alienLaserList.clear();
-  shooterLaserList.clear();
-  pointsGained = 0;
-  // refreshing with new aliens
-  for (int i = 0; i < 5; i++) {
-    for (int i2 = 0; i2 < 11; i2++) {
-      
-      if (i == 0) {
-        alienList.add(new Alien(i2 * 100 + 50, i * 75 + 25, "squid"));
-      } else if (i == 1 || i == 2) {
-        alienList.add(new Alien(i2 * 100 + 50, i * 75 + 25, "crab"));
-      } else if (i == 3 || i == 4) {
-        alienList.add(new Alien(i2 * 100 + 50, i * 75 + 25, "octopus"));
-      }
-    }  
-  }
-  
-  for (int i = 0; i < 3; i++) {
-    for (int i2 = 0; i2 < 3; i2++) {
-    if (!(i == 1 && i2 == 2)) {
-        barrier1.add(new BarrierPortion(270 + i * 40, 570 + i2 * 30, 3));
-        barrier2.add(new BarrierPortion(570 + i * 40, 570 + i2 * 30, 3));
-        barrier3.add(new BarrierPortion(870 + i * 40, 570 + i2 * 30, 3));
-      } 
-    }
-  }
-}
-
-
-void renewGame() {
-  // removing all aliens from the list, assuming there are
-  shootingCooldown = 0;
-  cooldown = 0;
-  alienList.clear();
-  alienLaserList.clear();
-  shooterLaserList.clear();
-  // refreshing with new aliens
-  for (int i = 0; i < 5; i++) {
-    for (int i2 = 0; i2 < 11; i2++) {
-      
-      if (i == 0) {
-        alienList.add(new Alien(i2 * 100 + 50, i * 75 + 25, "squid"));
-      } else if (i == 1 || i == 2) {
-        alienList.add(new Alien(i2 * 100 + 50, i * 75 + 25, "crab"));
-      } else if (i == 3 || i == 4) {
-        alienList.add(new Alien(i2 * 100 + 50, i * 75 + 25, "octopus"));
-      }
-    }  
-  }
 }
 
 void keyReleased() {
@@ -185,6 +151,12 @@ void mousePressed() {
       }
       break;
     case COSMETICS:
+      if (confettiBuyButton.activateButton(Screen.COSMETICS) && !cosmeticUnlocked.get("Confetti Trail")) {
+        if (totalPoints >= 2000) {
+          cosmeticUnlocked.put("Confetti Trail", true);
+          totalPoints -= 2000;
+        }
+      }
       break;
 
     case EASY_LEVEL:
@@ -343,16 +315,20 @@ void playGame(int framesToMove, int shootingCooldown) {
     ShooterLaser s = shooterLaserList.get(i);
     s.drawLaser();
     s.shoot();
-    if (s.y - s.h/2 <= 0) {
-      shooterLaserList.remove(i);
-    }
-    if (int(random(1, 11)) == 1) {
-      s.particleList.add(new Particle(s.x, s.y));
-    }
-    for (int j = s.particleList.size() - 1; j >= 0; j--) {
-      s.particleList.get(j).drawParticle();
-      if (s.particleList.get(j).w <= 0 || s.particleList.get(j).h <= 0) {
-        s.particleList.remove(j);
+    
+    // particle trail
+    if (cosmeticUnlocked.get("Confetti Trail")) {
+      if (s.y - s.h/2 <= 0) {
+        shooterLaserList.remove(i);
+      }
+      if (int(random(1, 16)) == 1) {
+        s.particleList.add(new Particle(s.x, s.y));
+      }
+      for (int j = s.particleList.size() - 1; j >= 0; j--) {
+        s.particleList.get(j).drawParticle();
+        if (s.particleList.get(j).w <= 0 || s.particleList.get(j).h <= 0) {
+          s.particleList.remove(j);
+        }
       }
     }
     for (int j = alienList.size() - 1; j >= 0; j--) {
@@ -400,5 +376,61 @@ void playGame(int framesToMove, int shootingCooldown) {
   // how long it takes for the aliens to move, affected by difficulty
   if (cooldown == framesToMove) {
     cooldown = 0;
+  }
+}
+
+void resetGame() {
+  // removing all aliens from the list, assuming there are
+  shootingCooldown = 0;
+  cooldown = 0;
+  alienList.clear();
+  alienLaserList.clear();
+  shooterLaserList.clear();
+  pointsGained = 0;
+  // refreshing with new aliens
+  for (int i = 0; i < 5; i++) {
+    for (int i2 = 0; i2 < 11; i2++) {
+      
+      if (i == 0) {
+        alienList.add(new Alien(i2 * 100 + 50, i * 75 + 25, "squid"));
+      } else if (i == 1 || i == 2) {
+        alienList.add(new Alien(i2 * 100 + 50, i * 75 + 25, "crab"));
+      } else if (i == 3 || i == 4) {
+        alienList.add(new Alien(i2 * 100 + 50, i * 75 + 25, "octopus"));
+      }
+    }  
+  }
+  
+  for (int i = 0; i < 3; i++) {
+    for (int i2 = 0; i2 < 3; i2++) {
+    if (!(i == 1 && i2 == 2)) {
+        barrier1.add(new BarrierPortion(270 + i * 40, 570 + i2 * 30, 3));
+        barrier2.add(new BarrierPortion(570 + i * 40, 570 + i2 * 30, 3));
+        barrier3.add(new BarrierPortion(870 + i * 40, 570 + i2 * 30, 3));
+      } 
+    }
+  }
+}
+
+
+void renewGame() {
+  // removing all aliens from the list, assuming there are
+  shootingCooldown = 0;
+  cooldown = 0;
+  alienList.clear();
+  alienLaserList.clear();
+  shooterLaserList.clear();
+  // refreshing with new aliens
+  for (int i = 0; i < 5; i++) {
+    for (int i2 = 0; i2 < 11; i2++) {
+      
+      if (i == 0) {
+        alienList.add(new Alien(i2 * 100 + 50, i * 75 + 25, "squid"));
+      } else if (i == 1 || i == 2) {
+        alienList.add(new Alien(i2 * 100 + 50, i * 75 + 25, "crab"));
+      } else if (i == 3 || i == 4) {
+        alienList.add(new Alien(i2 * 100 + 50, i * 75 + 25, "octopus"));
+      }
+    }  
   }
 }
