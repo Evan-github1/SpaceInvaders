@@ -4,6 +4,8 @@ int cooldown = 0;
 int waitToSwitch = 0;
 int shootingCooldown = 0;
 int totalPoints = 0;
+int bulletBoost = 1;
+int powerTimer = 0;
 int pointsGained = 0;
 float diffMult = 1;
 boolean moveDown = false;
@@ -40,7 +42,13 @@ public void setup() {
 public void draw() {
   background(0);
   cooldown++;
-
+  if (bulletBoost != 1) {
+    powerTimer++;
+  }
+  if (powerTimer >= 600) {
+    bulletBoost = 1;
+    powerTimer = 0;
+  }
   switch (screen) {
     case MAIN_MENU:
       textAlign(CENTER);
@@ -211,8 +219,8 @@ void playGame(int framesToMove, int shootingCooldown) {
   textSize(20);
   text("Points: " + pointsGained, 1100, 750);
   shooter1.drawShooter();
-  if (int(random(1, 200)) == 1) {
-    powerupList.add(new Powerup(500, 500));
+  if (int(random(1, 500 * diffMult)) == 1) {
+    powerupList.add(new Powerup(int(random(15, 1190)), int(random(15, 500))));
   }
   for (int i = powerupList.size() - 1; i >= 0; i--) {
     powerupList.get(i).drawPowerup();
@@ -246,6 +254,9 @@ void playGame(int framesToMove, int shootingCooldown) {
   for (int i = 0; i < alienList.size(); i++) {
     Alien a = alienList.get(i);
     a.drawAlien();
+    if (a.y + 75 >= shooter1.y) {
+      screen = Screen.GAME_OVER;
+    }
     if ((int) random(1, alienList.size() + 1) == 1 && a.shooting && cooldown == 1) {
       alienLaserList.add(new AlienLaser(a.x + a.w/2, a.y + a.h/2));
     }
@@ -389,7 +400,9 @@ void resetGame() {
   alienList.clear();
   alienLaserList.clear();
   shooterLaserList.clear();
+  powerupList.clear();
   pointsGained = 0;
+  shooter1.x = 600;
   // refreshing with new aliens
   for (int i = 0; i < 5; i++) {
     for (int i2 = 0; i2 < 11; i2++) {

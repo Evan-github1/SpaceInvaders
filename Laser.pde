@@ -1,6 +1,5 @@
 abstract class Laser {
   protected float x, y, w, h, dy;
-  
   protected Laser(float x, float y) {
     this.x = x;
     this.y = y;

@@ -17,9 +17,8 @@ public class Shooter {
     fill(r, g, b);
     rect(x, y, w, h);
     rect(x, y - h/2 - h/8, w/8, h/4);
-    //if (x - w/2 >= 0 && dx < 0) {
-      x += dx;
-    //}
+    x += dx;
+    x = constrain(x, w/2, 1200 - w/2);
   }
  
 }

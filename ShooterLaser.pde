@@ -4,6 +4,8 @@ public class ShooterLaser extends Laser {
   ShooterLaser(float x, float y) {
     super(x, y);
     dy = -5;
+    w = 5 * bulletBoost;
+    h = 10 * bulletBoost;
   }
   
   void drawLaser() {
