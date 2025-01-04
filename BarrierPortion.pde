@@ -22,7 +22,7 @@ public class BarrierPortion {
     rect(x, y, 40, 30);
   }
   
-  protected boolean hitPortion(float ex, float ey, float ew, float eh) {
+  boolean hitPortion(float ex, float ey, float ew, float eh) {
     // e for entity (lasers)
     if (x - w/2 <= ex + ew/2 && x + w/2 >= ex - ew/2 && y + h/2 >= ey - eh/2 && y - h/2 <= ey + eh/2) {
       return true;

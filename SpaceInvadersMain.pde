@@ -3,11 +3,12 @@ HashMap<String, Boolean> cosmeticUnlocked = new HashMap<String, Boolean>();
 int cooldown = 0;
 int waitToSwitch = 0;
 int shootingCooldown = 0;
-int totalPoints = 2001;
+int totalPoints = 0;
 int pointsGained = 0;
 float diffMult = 1;
 boolean moveDown = false;
 PFont pixelFont;
+ArrayList<Powerup> powerupList = new ArrayList<>();
 ArrayList<Screen> prevScreen = new ArrayList<>();
 ArrayList<BarrierPortion> barrier1 = new ArrayList<>();
 ArrayList<BarrierPortion> barrier2 = new ArrayList<>();
@@ -63,7 +64,7 @@ public void draw() {
       confettiBuyButton.drawButton();
       demoLaser.drawLaser();
       if (int(random(1, 16)) == 1) {
-        demoLaser.particleList.add(new Particle(demoLaser.x, demoLaser.y));
+        demoLaser.particleList.add(new Particle(demoLaser.x, demoLaser.y + demoLaser.h/2));
       }
       for (int j = demoLaser.particleList.size() - 1; j >= 0; j--) {
         demoLaser.particleList.get(j).drawParticle();
@@ -210,6 +211,12 @@ void playGame(int framesToMove, int shootingCooldown) {
   textSize(20);
   text("Points: " + pointsGained, 1100, 750);
   shooter1.drawShooter();
+  if (int(random(1, 200)) == 1) {
+    powerupList.add(new Powerup(500, 500));
+  }
+  for (int i = powerupList.size() - 1; i >= 0; i--) {
+    powerupList.get(i).drawPowerup();
+  }
   if (shootingCooldown != this.shootingCooldown) {
     this.shootingCooldown++;
   }
@@ -315,14 +322,16 @@ void playGame(int framesToMove, int shootingCooldown) {
     ShooterLaser s = shooterLaserList.get(i);
     s.drawLaser();
     s.shoot();
-    
+    for (int j = powerupList.size() - 1; j >= 0; j--) {
+      powerupList.get(j).hitPowerup(s.x, s.y, s.w, s.h);
+    }
     // particle trail
     if (cosmeticUnlocked.get("Confetti Trail")) {
       if (s.y - s.h/2 <= 0) {
         shooterLaserList.remove(i);
       }
       if (int(random(1, 16)) == 1) {
-        s.particleList.add(new Particle(s.x, s.y));
+        s.particleList.add(new Particle(s.x, s.y + s.h/2));
       }
       for (int j = s.particleList.size() - 1; j >= 0; j--) {
         s.particleList.get(j).drawParticle();
@@ -331,19 +340,13 @@ void playGame(int framesToMove, int shootingCooldown) {
         }
       }
     }
+    
     for (int j = alienList.size() - 1; j >= 0; j--) {
       Alien a = alienList.get(j);
   
       if (s.hitLaser(a.x, a.y, a.w, a.h)) {
-        if (a.type == "squid") {
-          pointsGained += int(40 * diffMult);
-        } else if (a.type == "crab") {
-          pointsGained += int(20 * diffMult);
-        } else if (a.type == "octopus") {
-          pointsGained += int(10 * diffMult);
-        }
+        a.killAlien();
         shooterLaserList.remove(i);
-        alienList.remove(j);
       }
     }
     

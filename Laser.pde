@@ -27,5 +27,5 @@ abstract class Laser {
     y += dy;
   }
   
-  abstract void removeLaser();
+  abstract protected void removeLaser();
 }

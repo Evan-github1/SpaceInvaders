@@ -69,4 +69,15 @@ public class Alien {
       shooting = false;
     }
   }
+  
+  public void killAlien() {
+    if (type == "squid") {
+      pointsGained += int(40 * diffMult);
+    } else if (type == "crab") {
+      pointsGained += int(20 * diffMult);
+    } else if (type == "octopus") {
+      pointsGained += int(10 * diffMult);
+    }
+    alienList.remove(this);
+  }
 }
