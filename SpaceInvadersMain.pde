@@ -3,7 +3,7 @@ HashMap<String, Boolean> cosmeticUnlocked = new HashMap<String, Boolean>();
 int cooldown = 0;
 int waitToSwitch = 0;
 int shootingCooldown = 0;
-int totalPoints = 20000;
+int totalPoints = 0;
 int bulletBoost = 1;
 int powerTimer = 0;
 int pointsGained = 0;
@@ -219,7 +219,6 @@ void playGame(int framesToMove, int shootingCooldown) {
   fill(255);
   textSize(20);
   text("Points: " + pointsGained, 1100, 750);
-  System.out.println(alienList.get(alienList.size() - 1).explosionDuration);
   shooter1.drawShooter();
   if (int(random(1, 500 * diffMult)) == 1) {
     powerupList.add(new Powerup(int(random(15, 1190)), int(random(15, 500))));
