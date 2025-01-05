@@ -18,7 +18,7 @@ public class Alien {
     squidShooting = loadImage("SquidShooting.png");
     crabStatic = loadImage("CrabStatic.png");
     crabShooting = loadImage("CrabShooting.png");
-    redExplosion = loadImage("RedExplosion.png");
+    redExplosion = loadImage("GreenExplosion.png");
   }
   
   public void drawAlien() {
@@ -66,7 +66,7 @@ public class Alien {
   }
   
   public boolean edgeCheck() {
-    if (x == 1170 || x == 30) {
+    if (x == 1170 || x == 30 && !death) {
       return true;  
     } else {
       return false;

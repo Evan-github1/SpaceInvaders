@@ -357,7 +357,7 @@ void playGame(int framesToMove, int shootingCooldown) {
     for (int j = alienList.size() - 1; j >= 0; j--) {
       Alien a = alienList.get(j);
   
-      if (s.hitLaser(a.x, a.y, a.w, a.h)) {
+      if (s.hitLaser(a.x, a.y, a.w, a.h) && !a.death) {
         a.killAlien();
         a.death = true;
         shooterLaserList.remove(i);
