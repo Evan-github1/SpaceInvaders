@@ -9,8 +9,8 @@ public class Particle {
     for (int i = 0; i < rgb.length; i++) {
       rgb[i] = (int(random(0, 256)));
     }
-    w = int(random(8, 13));
-    h = int(random(8, 13));
+    w = int(random(8, 13)) * bulletBoost;
+    h = int(random(8, 13)) * bulletBoost;
   }
   public void drawParticle() {
     noStroke();
@@ -21,6 +21,5 @@ public class Particle {
     rect(x, y, w, h);
     w -= .1;
     h -= .1;
-    
   }
 }
