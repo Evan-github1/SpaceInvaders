@@ -1,4 +1,3 @@
-Screen screen;
 HashMap<String, Boolean> cosmeticUnlocked = new HashMap<String, Boolean>();
 int cooldown = 0;
 int waitToSwitch = 0;
@@ -17,7 +16,9 @@ ArrayList<BarrierPortion> barrier3 = new ArrayList<>();
 ArrayList<Alien> alienList = new ArrayList<>();
 ArrayList<AlienLaser> alienLaserList = new ArrayList<>();
 ArrayList<ShooterLaser> shooterLaserList = new ArrayList<>();
+Screen screen;
 Shooter shooter1 = new Shooter(600, 750, 75, 75/2);
+ShooterLaser demoLaser = new ShooterLaser(300, 400);
 Button playButton = new Button(600, 250, 200, 100, "PLAY");
 Button easyButton = new Button(600, 250, 200, 100, "EASY");
 Button mediumButton = new Button(600, 400, 250, 100, "MEDIUM");
@@ -25,7 +26,6 @@ Button hardButton = new Button(600, 550, 200, 100, "HARD");
 Button backButton = new Button(1100, 750, 100, 50, "BACK");
 Button cosmeticButton = new Button(600, 400, 300, 100, "COSMETICS");
 Button confettiBuyButton = new Button(300, 500, 300, 100, "2000");
-ShooterLaser demoLaser = new ShooterLaser(300, 400);
 public void setup() {
   size(1200, 800);
   pixelFont = createFont("slkscre.ttf", 75);
