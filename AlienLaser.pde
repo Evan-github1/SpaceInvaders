@@ -1,5 +1,4 @@
 public class AlienLaser extends Laser {
-  
   AlienLaser(float x, float y) {
     super(x, y);
     dy = 5;

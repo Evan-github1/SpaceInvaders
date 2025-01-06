@@ -84,11 +84,11 @@ public class Alien {
   
   public void killAlien() {
     if (type == "squid") {
-      pointsGained += int(40 * diffMult);
+      pointsGained += int(40 * screen.DIFFMULT);
     } else if (type == "crab") {
-      pointsGained += int(20 * diffMult);
+      pointsGained += int(20 * screen.DIFFMULT);
     } else if (type == "octopus") {
-      pointsGained += int(10 * diffMult);
+      pointsGained += int(10 * screen.DIFFMULT);
     }
     if (cosmeticUnlocked.get("Red Explosion Effect") && explosionDuration <= 60) {
       death = true;

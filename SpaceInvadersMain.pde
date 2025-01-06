@@ -7,7 +7,6 @@ int totalPoints = 0;
 int bulletBoost = 1;
 int powerTimer = 0;
 int pointsGained = 0;
-float diffMult = 1;
 boolean moveDown = false;
 PFont pixelFont;
 ArrayList<Powerup> powerupList = new ArrayList<>();
@@ -142,12 +141,15 @@ void keyPressed() {
 }
 
 void mousePressed() {
+  // goes to the previous screen
+  // try catch needed because you are able to press the back button on different screens, doing so will cause an index out of bounds error
   try {
     if (backButton.activateButton(screen)) {
       screen = prevScreen.get(prevScreen.size() - 1);
       prevScreen.remove(prevScreen.size() - 1);
     }
   } catch(IndexOutOfBoundsException IGNOREME) {
+    // ignore this exception; needed to prevent the program from crashing
   }
   
   switch (screen) {
@@ -170,21 +172,18 @@ void mousePressed() {
       break;
 
     case EASY_LEVEL:
-      diffMult = 1;
       if (shootingCooldown == 35) {
         shooterLaserList.add(new ShooterLaser(shooter1.x, shooter1.y - shooter1.h/2 - shooter1.h/8));
         shootingCooldown = 0;
       }
       break;
     case MEDIUM_LEVEL:
-      diffMult = 1.25;
       if (shootingCooldown == 40) {
         shooterLaserList.add(new ShooterLaser(shooter1.x, shooter1.y - shooter1.h/2 - shooter1.h/8));
         shootingCooldown = 0;
       }     
       break;
     case HARD_LEVEL:
-      diffMult = 1.5;
       if (shootingCooldown == 45) {
         shooterLaserList.add(new ShooterLaser(shooter1.x, shooter1.y - shooter1.h/2 - shooter1.h/8));
         shootingCooldown = 0;      
@@ -220,7 +219,7 @@ void playGame(int framesToMove, int shootingCooldown) {
   textSize(20);
   text("Points: " + pointsGained, 1100, 750);
   shooter1.drawShooter();
-  if (int(random(1, 500 * diffMult)) == 1) {
+  if (int(random(1, 500 * screen.DIFFMULT)) == 1) {
     powerupList.add(new Powerup(int(random(15, 1190)), int(random(15, 500))));
   }
   for (int i = powerupList.size() - 1; i >= 0; i--) {
@@ -258,7 +257,7 @@ void playGame(int framesToMove, int shootingCooldown) {
     if (a.y + 75 >= shooter1.y) {
       screen = Screen.GAME_OVER;
     }
-    if ((int) random(1, alienList.size() + 1) == 1 && a.shooting && cooldown == 1) {
+    if ((int) random(1, alienList.size() + 1) == 1 && a.shooting && cooldown == 1 && !a.death) {
       alienLaserList.add(new AlienLaser(a.x + a.w/2, a.y + a.h/2));
     }
     
@@ -297,7 +296,6 @@ void playGame(int framesToMove, int shootingCooldown) {
   for (int i = 0; i < alienLaserList.size(); i++) {
     AlienLaser a = alienLaserList.get(i);
     a.drawLaser();
-    a.shoot();
     if (a.hitLaser(shooter1.x, shooter1.y, shooter1.w, shooter1.h)) {
       waitToSwitch = 0;
       screen = Screen.GAME_OVER;

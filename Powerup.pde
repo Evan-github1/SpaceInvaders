@@ -28,7 +28,7 @@ public class Powerup {
         break;
     }
     rect(x, y, wh, wh);
-    if (lifeSpan >= 480/diffMult) {
+    if (lifeSpan >= 480/screen.DIFFMULT) {
       powerupList.remove(this);
     }
   }
@@ -38,12 +38,14 @@ public class Powerup {
     if (x - wh/2 <= ex + ew/2 && x + wh/2 >= ex - ew/2 && y + wh/2 >= ey - eh/2 && y - wh/2 <= ey + eh/2) {
       switch (type) {
       case 0:
-        // kills 5 enemies randomly
+        // kills up to 5 enemies randomly
+        // try catch statement needed in case there are less than 5 enemies remaining
         try {
           for (int i = 0; i <= 4; i++) {
             alienList.get(int(random(0, alienList.size() - 1))).killAlien();
           }
         } catch (IndexOutOfBoundsException IGNOREME) {
+          // ignore the exception; needed to prevent program from crashing
         }
         break;
       case 1:
