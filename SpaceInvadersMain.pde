@@ -37,7 +37,7 @@ public void setup() {
   demoLaser.dy = 0;
   demoLaser.w *= 2.5;
   demoLaser.h *= 2.5;
-} 
+}
 
 public void draw() {
   background(0);
@@ -50,78 +50,78 @@ public void draw() {
     powerTimer = 0;
   }
   switch (screen) {
-    case MAIN_MENU:
-      textAlign(CENTER);
-      fill(255);
-      textSize(75);
-      text("Space Invaders", 600, 125);
-      playButton.drawButton();
-      cosmeticButton.drawButton();
-      break;
+  case MAIN_MENU:
+    textAlign(CENTER);
+    fill(255);
+    textSize(75);
+    text("Space Invaders", 600, 125);
+    playButton.drawButton();
+    cosmeticButton.drawButton();
+    break;
 
-    case COSMETICS:
-      textAlign(CENTER);
-      fill(255);
-      textSize(75);
-      text("Cosmetics Shop", 600, 125);
-      textSize(20);
-      text("Total Points: " + totalPoints, 150, 750);
-      text("Confetti Laser Trail", 300, 350);
-      backButton.drawButton();
-      
-      confettiBuyButton.drawButton();
-      demoLaser.drawLaser();
-      if (int(random(1, 16)) == 1) {
-        demoLaser.particleList.add(new Particle(demoLaser.x, demoLaser.y + demoLaser.h/2));
+  case COSMETICS:
+    textAlign(CENTER);
+    fill(255);
+    textSize(75);
+    text("Cosmetics Shop", 600, 125);
+    textSize(20);
+    text("Total Points: " + totalPoints, 150, 750);
+    text("Confetti Laser Trail", 300, 350);
+    backButton.drawButton();
+
+    confettiBuyButton.drawButton();
+    demoLaser.drawLaser();
+    if (int(random(1, 16)) == 1) {
+      demoLaser.particleList.add(new Particle(demoLaser.x, demoLaser.y + demoLaser.h/2));
+    }
+    for (int j = demoLaser.particleList.size() - 1; j >= 0; j--) {
+      demoLaser.particleList.get(j).drawParticle();
+      if (demoLaser.particleList.get(j).w <= 0 || demoLaser.particleList.get(j).h <= 0) {
+        demoLaser.particleList.remove(j);
       }
-      for (int j = demoLaser.particleList.size() - 1; j >= 0; j--) {
-        demoLaser.particleList.get(j).drawParticle();
-        if (demoLaser.particleList.get(j).w <= 0 || demoLaser.particleList.get(j).h <= 0) {
-          demoLaser.particleList.remove(j);
-        }
-      }
-      if (cosmeticUnlocked.get("Confetti Trail")) {
-        confettiBuyButton.text = "UNLOCKED";
-      }
-      break;
+    }
+    if (cosmeticUnlocked.get("Confetti Trail")) {
+      confettiBuyButton.text = "UNLOCKED";
+    }
+    break;
 
-    case EASY_LEVEL:
-      playGame(45, 35);
-      break;
+  case EASY_LEVEL:
+    playGame(45, 35);
+    break;
 
-    case MEDIUM_LEVEL:
-      playGame(35, 40);
-      break;
+  case MEDIUM_LEVEL:
+    playGame(35, 40);
+    break;
 
-    case HARD_LEVEL:
-      playGame(30, 45);
-      break;
+  case HARD_LEVEL:
+    playGame(30, 45);
+    break;
 
-    case TWO_PLAYER_MODE:
-      break;
-    case GAME_OVER:
-      textAlign(CENTER);
-      fill(220, 20, 60);
-      textSize(150);
-      text("GAME OVER", 600, 400, 10);
-      waitToSwitch++;
-      if (waitToSwitch == 180) {
-        totalPoints += pointsGained;
-        screen = prevScreen.get(prevScreen.size() - 1);
-        prevScreen.remove(prevScreen.size() - 1);
-      }
-      break;
-    case DIFFICULTY:
-      textAlign(CENTER);
-      fill(255);
-      textSize(75);
-      text("Select Difficulty", 600, 125, 10);
-      easyButton.drawButton();
-      mediumButton.drawButton();
-      hardButton.drawButton();
-      backButton.drawButton();
-      break;
-  }  
+  case TWO_PLAYER_MODE:
+    break;
+  case GAME_OVER:
+    textAlign(CENTER);
+    fill(220, 20, 60);
+    textSize(150);
+    text("GAME OVER", 600, 400, 10);
+    waitToSwitch++;
+    if (waitToSwitch == 180) {
+      totalPoints += pointsGained;
+      screen = prevScreen.get(prevScreen.size() - 1);
+      prevScreen.remove(prevScreen.size() - 1);
+    }
+    break;
+  case DIFFICULTY:
+    textAlign(CENTER);
+    fill(255);
+    textSize(75);
+    text("Select Difficulty", 600, 125, 10);
+    easyButton.drawButton();
+    mediumButton.drawButton();
+    hardButton.drawButton();
+    backButton.drawButton();
+    break;
+  }
 }
 
 void keyReleased() {
@@ -136,7 +136,7 @@ void keyPressed() {
       shooter1.dx = -8;
     } else if (key == 'd' && key != 'a') {
       shooter1.dx = 8;
-    } 
+    }
   }
 }
 
@@ -148,77 +148,82 @@ void mousePressed() {
       screen = prevScreen.get(prevScreen.size() - 1);
       prevScreen.remove(prevScreen.size() - 1);
     }
-  } catch(IndexOutOfBoundsException IGNOREME) {
+  }
+  catch(IndexOutOfBoundsException IGNOREME) {
     // ignore this exception; needed to prevent the program from crashing
   }
-  
+
   switch (screen) {
-    case MAIN_MENU:
-      if (playButton.activateButton(Screen.MAIN_MENU)) {
-        prevScreen.add(screen);
-        screen = Screen.DIFFICULTY;
-      } else if (cosmeticButton.activateButton(Screen.MAIN_MENU)) {
-        prevScreen.add(screen);
-        screen = Screen.COSMETICS;
+  case MAIN_MENU:
+    if (playButton.activateButton(Screen.MAIN_MENU)) {
+      prevScreen.add(screen);
+      screen = Screen.DIFFICULTY;
+    } else if (cosmeticButton.activateButton(Screen.MAIN_MENU)) {
+      prevScreen.add(screen);
+      screen = Screen.COSMETICS;
+    }
+    break;
+  case COSMETICS:
+    if (confettiBuyButton.activateButton(Screen.COSMETICS) && !cosmeticUnlocked.get("Confetti Trail")) {
+      if (totalPoints >= 2000) {
+        cosmeticUnlocked.put("Confetti Trail", true);
+        totalPoints -= 2000;
       }
-      break;
-    case COSMETICS:
-      if (confettiBuyButton.activateButton(Screen.COSMETICS) && !cosmeticUnlocked.get("Confetti Trail")) {
-        if (totalPoints >= 2000) {
-          cosmeticUnlocked.put("Confetti Trail", true);
-          totalPoints -= 2000;
-        }
-      }
-      break;
+    }
+    break;
 
-    case EASY_LEVEL:
-      if (shootingCooldown == 35) {
-        shooterLaserList.add(new ShooterLaser(shooter1.x, shooter1.y - shooter1.h/2 - shooter1.h/8));
-        shootingCooldown = 0;
-      }
-      break;
-    case MEDIUM_LEVEL:
-      if (shootingCooldown == 40) {
-        shooterLaserList.add(new ShooterLaser(shooter1.x, shooter1.y - shooter1.h/2 - shooter1.h/8));
-        shootingCooldown = 0;
-      }     
-      break;
-    case HARD_LEVEL:
-      if (shootingCooldown == 45) {
-        shooterLaserList.add(new ShooterLaser(shooter1.x, shooter1.y - shooter1.h/2 - shooter1.h/8));
-        shootingCooldown = 0;      
-      }
-      break;
+  case EASY_LEVEL:
+    if (shootingCooldown == 35) {
+      shooterLaserList.add(new ShooterLaser(shooter1.x, shooter1.y - shooter1.h/2 - shooter1.h/8));
+      shootingCooldown = 0;
+    }
+    break;
+  case MEDIUM_LEVEL:
+    if (shootingCooldown == 40) {
+      shooterLaserList.add(new ShooterLaser(shooter1.x, shooter1.y - shooter1.h/2 - shooter1.h/8));
+      shootingCooldown = 0;
+    }
+    break;
+  case HARD_LEVEL:
+    if (shootingCooldown == 45) {
+      shooterLaserList.add(new ShooterLaser(shooter1.x, shooter1.y - shooter1.h/2 - shooter1.h/8));
+      shootingCooldown = 0;
+    }
+    break;
 
-    case TWO_PLAYER_MODE:
-      break;
-    case GAME_OVER:
-      break;
-      
-    case DIFFICULTY:
-      if (easyButton.activateButton(Screen.DIFFICULTY)) {
-        resetGame();
-        prevScreen.add(screen);
-        screen = Screen.EASY_LEVEL;
-      } else if (mediumButton.activateButton(Screen.DIFFICULTY)) {
-        resetGame();
-        prevScreen.add(screen);
-        screen = Screen.MEDIUM_LEVEL;
-      } else if (hardButton.activateButton(Screen.DIFFICULTY)) {
-        resetGame();
-        prevScreen.add(screen);
-        screen = Screen.HARD_LEVEL;
-      }
-      break;
-      
-  }  
+  case TWO_PLAYER_MODE:
+    break;
+  case GAME_OVER:
+    break;
+
+  case DIFFICULTY:
+    if (easyButton.activateButton(Screen.DIFFICULTY)) {
+      resetGame();
+      prevScreen.add(screen);
+      screen = Screen.EASY_LEVEL;
+    } else if (mediumButton.activateButton(Screen.DIFFICULTY)) {
+      resetGame();
+      prevScreen.add(screen);
+      screen = Screen.MEDIUM_LEVEL;
+    } else if (hardButton.activateButton(Screen.DIFFICULTY)) {
+      resetGame();
+      prevScreen.add(screen);
+      screen = Screen.HARD_LEVEL;
+    }
+    break;
+  }
 }
 
 void playGame(int framesToMove, int shootingCooldown) {
   fill(255);
   textSize(20);
-  text("Points: " + pointsGained, 1100, 750);
+  text("Points: " + pointsGained, 1100, 750);  
+  text("Lives: " + shooter1.lives, 1100, 710);
   shooter1.drawShooter();
+  if (shooter1.lives == 0) {
+    waitToSwitch = 0;
+    screen = Screen.GAME_OVER;
+  }
   if (int(random(1, 500 * screen.DIFFMULT)) == 1) {
     powerupList.add(new Powerup(int(random(15, 1190)), int(random(15, 500))));
   }
@@ -245,26 +250,26 @@ void playGame(int framesToMove, int shootingCooldown) {
   for (int i = 0; i < barrier3.size(); i++) {
     BarrierPortion b = barrier3.get(i);
     b.drawPortion();
-    if (b.lives == 0) { 
+    if (b.lives == 0) {
       barrier3.remove(i);
     }
   }
 
-  
+
   for (int i = 0; i < alienList.size(); i++) {
     Alien a = alienList.get(i);
     a.drawAlien();
-    if (a.y + 75 >= shooter1.y) {
+    if (a.y + 75 >= shooter1.y && !a.death) {
       screen = Screen.GAME_OVER;
     }
     if ((int) random(1, alienList.size() + 1) == 1 && a.shooting && cooldown == 1 && !a.death) {
       alienLaserList.add(new AlienLaser(a.x + a.w/2, a.y + a.h/2));
     }
-    
+
     if (a.edgeCheck()) {
       for (int j = 0; j < alienList.size(); j++) {
         Alien all = alienList.get(j);
-        all.dx *= -1; 
+        all.dx *= -1;
         all.y += all.dy;
         all.moveAlien();
         all.shooting = false;
@@ -292,19 +297,19 @@ void playGame(int framesToMove, int shootingCooldown) {
       a.moveAlien();
     }
   }
-  
+
   for (int i = 0; i < alienLaserList.size(); i++) {
     AlienLaser a = alienLaserList.get(i);
     a.drawLaser();
+    a.shoot();
     if (a.hitLaser(shooter1.x, shooter1.y, shooter1.w, shooter1.h)) {
-      waitToSwitch = 0;
-      screen = Screen.GAME_OVER;
+      shooter1.lives--;
       alienLaserList.remove(i);
     }
     if (a.y + a.h/2 >= 800) {
       alienLaserList.remove(i);
     }
-    
+
     for (int i2 = 0; i2 < barrier1.size(); i2++) {
       BarrierPortion b = barrier1.get(i2);
       if (a.hitLaser(b.x, b.y, b.w, b.h)) {
@@ -326,8 +331,8 @@ void playGame(int framesToMove, int shootingCooldown) {
         a.removeLaser();
       }
     }
-  }  
-  
+  }
+
   for (int i = shooterLaserList.size() - 1; i >= 0; i--) {
     ShooterLaser s = shooterLaserList.get(i);
     s.drawLaser();
@@ -350,17 +355,17 @@ void playGame(int framesToMove, int shootingCooldown) {
         }
       }
     }
-    
+
     for (int j = alienList.size() - 1; j >= 0; j--) {
       Alien a = alienList.get(j);
-  
+
       if (s.hitLaser(a.x, a.y, a.w, a.h) && !a.death) {
         a.killAlien();
         a.death = true;
         shooterLaserList.remove(i);
       }
     }
-    
+
     for (int i2 = 0; i2 < barrier1.size(); i2++) {
       BarrierPortion b = barrier1.get(i2);
       if (s.hitLaser(b.x, b.y, b.w, b.h)) {
@@ -383,7 +388,7 @@ void playGame(int framesToMove, int shootingCooldown) {
       }
     }
   }
-  
+
   if (alienList.isEmpty()) {
     renewGame();
   }
@@ -406,7 +411,7 @@ void resetGame() {
   // refreshing with new aliens
   for (int i = 0; i < 5; i++) {
     for (int i2 = 0; i2 < 11; i2++) {
-      
+
       if (i == 0) {
         alienList.add(new Alien(i2 * 100 + 50, i * 75 + 25, "squid"));
       } else if (i == 1 || i == 2) {
@@ -414,16 +419,16 @@ void resetGame() {
       } else if (i == 3 || i == 4) {
         alienList.add(new Alien(i2 * 100 + 50, i * 75 + 25, "octopus"));
       }
-    }  
+    }
   }
-  
+
   for (int i = 0; i < 3; i++) {
     for (int i2 = 0; i2 < 3; i2++) {
-    if (!(i == 1 && i2 == 2)) {
+      if (!(i == 1 && i2 == 2)) {
         barrier1.add(new BarrierPortion(270 + i * 40, 570 + i2 * 30, 3));
         barrier2.add(new BarrierPortion(570 + i * 40, 570 + i2 * 30, 3));
         barrier3.add(new BarrierPortion(870 + i * 40, 570 + i2 * 30, 3));
-      } 
+      }
     }
   }
 }
@@ -431,6 +436,7 @@ void resetGame() {
 
 void renewGame() {
   // removing all aliens from the list, assuming there are
+  shooter1.lives = 3;
   shootingCooldown = 0;
   cooldown = 0;
   alienList.clear();
@@ -439,7 +445,7 @@ void renewGame() {
   // refreshing with new aliens
   for (int i = 0; i < 5; i++) {
     for (int i2 = 0; i2 < 11; i2++) {
-      
+
       if (i == 0) {
         alienList.add(new Alien(i2 * 100 + 50, i * 75 + 25, "squid"));
       } else if (i == 1 || i == 2) {
@@ -447,6 +453,6 @@ void renewGame() {
       } else if (i == 3 || i == 4) {
         alienList.add(new Alien(i2 * 100 + 50, i * 75 + 25, "octopus"));
       }
-    }  
+    }
   }
 }

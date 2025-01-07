@@ -1,5 +1,6 @@
 public class Shooter {
   float x, y, w, h, r, g, b, dx;
+  int lives;
   Shooter(float x, float y, float w, float h) {
     this.x = x;
     this.y = y;
@@ -9,6 +10,7 @@ public class Shooter {
     g = 206;
     b = 235;
     dx = 0;
+    lives = 3;
   }
   
   public void drawShooter() {

@@ -1,12 +1,17 @@
 public class Powerup {
+  PImage killPowerup, repairBarriersPowerup, bulletBoostPowerup, healPowerup;
   float x, y, wh;
-  int type = int(random(0, 3));
+  int type = int(random(0, 4));
   int lifeSpan = 0;
   int powerLasting = 0;
   Powerup(float x, float y) {
     this.x = x;
     this.y = y;
     wh = 30;
+    killPowerup = loadImage("killPowerup.png");
+    repairBarriersPowerup = loadImage("repairBarriers.png");
+    bulletBoostPowerup = loadImage("bulletBoost.png");
+    healPowerup = loadImage("heal.png");
   }
   
   public void drawPowerup() {
@@ -15,19 +20,21 @@ public class Powerup {
     noStroke();
     switch (type) {
       case 0:
-        fill(160, 32, 240);
+        image(killPowerup, x, y);
         break;
       case 1:
-        fill(2, 48, 32);
+        image(repairBarriersPowerup, x, y);
         break;
       case 2:
-        fill(255, 127, 80);
+        image(bulletBoostPowerup, x, y);
+        break;
+      case 3:
+        image(healPowerup, x, y);
         break;
       default:
         System.out.println("Error! Type doesn't exist: " + type); 
         break;
     }
-    rect(x, y, wh, wh);
     if (lifeSpan >= 480/screen.DIFFMULT) {
       powerupList.remove(this);
     }
@@ -65,6 +72,9 @@ public class Powerup {
         break;
       case 2:
         bulletBoost = 3;
+        break;
+      case 3:
+        shooter1.lives++;
         break;
       default:
         System.out.println("Error! Type dosn't exist: " + type);
