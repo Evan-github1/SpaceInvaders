@@ -34,7 +34,7 @@ Button greenExplosionBuyButton = new Button(900, 500, 250, 100, "1500");
 Button nextButton = new Button(1100, 650, 100, 50, "NEXT");
 Button inventoryButton = new Button(600, 550, 350, 100, "INVENTORY");
 String currentTrail = null;
-String currentEffect = "Green Explosion Effect";
+String currentEffect = null;
 
 public void setup() {
   size(1200, 800);
@@ -254,12 +254,15 @@ void mousePressed() {
   case COSMETICS_2:
     if (redExplosionBuyButton.activateButton(Screen.COSMETICS_2) && !cosmeticUnlocked.get("Red Explosion Effect")) {
       buyItem(1000, "Red Explosion Effect", redExplosionBuyButton);
+      currentEffect = "Red Explosion Effect";
     }
     if (blueExplosionBuyButton.activateButton(Screen.COSMETICS_2) && !cosmeticUnlocked.get("Blue Explosion Effect")) {
       buyItem(1500, "Blue Explosion Effect", blueExplosionBuyButton);
+      currentEffect = "Blue Explosion Effect";
     }
     if (greenExplosionBuyButton.activateButton(Screen.COSMETICS_2) && !cosmeticUnlocked.get("Green Explosion Effect")) {
       buyItem(1500, "Green Explosion Effect", greenExplosionBuyButton);
+      currentEffect = "Green Explosion Effect";
     }
     break;
   case INVENTORY:
@@ -518,7 +521,5 @@ void buyItem(int price, String cosmeticName, Button buyButton) {
     cosmeticUnlocked.put(cosmeticName, true);
     totalPoints -= price;
     buyButton.text = "UNLOCKED";
-    currentTrail = cosmeticName;
-    System.out.println(currentTrail);
   }
 }
