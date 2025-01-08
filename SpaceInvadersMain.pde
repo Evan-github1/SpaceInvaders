@@ -2,10 +2,12 @@ HashMap<String, Boolean> cosmeticUnlocked = new HashMap<String, Boolean>();
 int cooldown = 0;
 int waitToSwitch = 0;
 int shootingCooldown = 0;
-int totalPoints = 0;
+int totalPoints = 10000;
 int bulletBoost = 1;
 int powerTimer = 0;
 int pointsGained = 0;
+int round = 0;
+PImage redExplosionDemo, blueExplosionDemo, greenExplosionDemo;
 boolean moveDown = false;
 PFont pixelFont;
 ArrayList<Powerup> powerupList = new ArrayList<>();
@@ -26,6 +28,14 @@ Button hardButton = new Button(600, 550, 200, 100, "HARD");
 Button backButton = new Button(1100, 750, 100, 50, "BACK");
 Button cosmeticButton = new Button(600, 400, 300, 100, "COSMETICS");
 Button confettiBuyButton = new Button(300, 500, 300, 100, "2000");
+Button redExplosionBuyButton = new Button(300, 500, 250, 100, "1000");
+Button blueExplosionBuyButton = new Button(600, 500, 250, 100, "1500");
+Button greenExplosionBuyButton = new Button(900, 500, 250, 100, "1500");
+Button nextButton = new Button(1100, 650, 100, 50, "NEXT");
+Button inventoryButton = new Button(600, 550, 350, 100, "INVENTORY");
+String currentTrail = null;
+String currentEffect = "Green Explosion Effect";
+
 public void setup() {
   size(1200, 800);
   pixelFont = createFont("slkscre.ttf", 75);
@@ -33,10 +43,15 @@ public void setup() {
   screen = Screen.MAIN_MENU;
   resetGame();
   cosmeticUnlocked.put("Confetti Trail", false);
-  cosmeticUnlocked.put("Red Explosion Effect", true);
+  cosmeticUnlocked.put("Red Explosion Effect", false);
+  cosmeticUnlocked.put("Blue Explosion Effect", false);
+  cosmeticUnlocked.put("Green Explosion Effect", false);
   demoLaser.dy = 0;
   demoLaser.w *= 2.5;
   demoLaser.h *= 2.5;
+  redExplosionDemo = loadImage("RedExplosion.png");
+  blueExplosionDemo = loadImage("BlueExplosion.png");
+  greenExplosionDemo = loadImage("GreenExplosion.png");
 }
 
 public void draw() {
@@ -57,6 +72,7 @@ public void draw() {
     text("Space Invaders", 600, 125);
     playButton.drawButton();
     cosmeticButton.drawButton();
+    inventoryButton.drawButton();
     break;
 
   case COSMETICS:
@@ -68,7 +84,7 @@ public void draw() {
     text("Total Points: " + totalPoints, 150, 750);
     text("Confetti Laser Trail", 300, 350);
     backButton.drawButton();
-
+    nextButton.drawButton();
     confettiBuyButton.drawButton();
     demoLaser.drawLaser();
     if (int(random(1, 16)) == 1) {
@@ -79,9 +95,6 @@ public void draw() {
       if (demoLaser.particleList.get(j).w <= 0 || demoLaser.particleList.get(j).h <= 0) {
         demoLaser.particleList.remove(j);
       }
-    }
-    if (cosmeticUnlocked.get("Confetti Trail")) {
-      confettiBuyButton.text = "UNLOCKED";
     }
     break;
 
@@ -121,7 +134,30 @@ public void draw() {
     hardButton.drawButton();
     backButton.drawButton();
     break;
-  }
+  case COSMETICS_2:
+    textAlign(CENTER);
+    fill(255);
+    textSize(75);
+    text("Cosmetics Shop", 600, 125);
+    textSize(20);
+    text("Total Points: " + totalPoints, 150, 750);
+    text("Red Explosion\nEffect", 300, 350);
+    text("Blue Explosion\nEffect", 600, 350);
+    text("Green Explosion\nEffect", 900, 350);
+    backButton.drawButton();
+    redExplosionBuyButton.drawButton();
+    blueExplosionBuyButton.drawButton();
+    greenExplosionBuyButton.drawButton();
+    image(redExplosionDemo, 300, 400);
+    image(blueExplosionDemo, 600, 400);
+    image(greenExplosionDemo, 900, 400);
+  case INVENTORY:
+    fill(255);
+    textSize(75);
+    text("INVENTORY", 600, 125);
+    backButton.drawButton();
+    break;
+}
 }
 
 void keyReleased() {
@@ -161,14 +197,18 @@ void mousePressed() {
     } else if (cosmeticButton.activateButton(Screen.MAIN_MENU)) {
       prevScreen.add(screen);
       screen = Screen.COSMETICS;
+    } else if (inventoryButton.activateButton(Screen.MAIN_MENU)) {
+      prevScreen.add(screen);
+      screen = Screen.INVENTORY;
     }
     break;
   case COSMETICS:
     if (confettiBuyButton.activateButton(Screen.COSMETICS) && !cosmeticUnlocked.get("Confetti Trail")) {
-      if (totalPoints >= 2000) {
-        cosmeticUnlocked.put("Confetti Trail", true);
-        totalPoints -= 2000;
-      }
+      buyItem(2000, "Confetti Trail", confettiBuyButton);
+    }
+    if (nextButton.activateButton(Screen.COSMETICS)) {
+      prevScreen.add(screen);
+      screen = Screen.COSMETICS_2;
     }
     break;
 
@@ -211,14 +251,29 @@ void mousePressed() {
       screen = Screen.HARD_LEVEL;
     }
     break;
+  case COSMETICS_2:
+    if (redExplosionBuyButton.activateButton(Screen.COSMETICS_2) && !cosmeticUnlocked.get("Red Explosion Effect")) {
+      buyItem(1000, "Red Explosion Effect", redExplosionBuyButton);
+    }
+    if (blueExplosionBuyButton.activateButton(Screen.COSMETICS_2) && !cosmeticUnlocked.get("Blue Explosion Effect")) {
+      buyItem(1500, "Blue Explosion Effect", blueExplosionBuyButton);
+    }
+    if (greenExplosionBuyButton.activateButton(Screen.COSMETICS_2) && !cosmeticUnlocked.get("Green Explosion Effect")) {
+      buyItem(1500, "Green Explosion Effect", greenExplosionBuyButton);
+    }
+    break;
+  case INVENTORY:
+    break;
   }
 }
 
 void playGame(int framesToMove, int shootingCooldown) {
+  waitToSwitch = 0;
   fill(255);
   textSize(20);
   text("Points: " + pointsGained, 1100, 750);  
   text("Lives: " + shooter1.lives, 1100, 710);
+  text("Round: " + (round + 1), 1100, 670);  
   shooter1.drawShooter();
   if (shooter1.lives == 0) {
     waitToSwitch = 0;
@@ -293,7 +348,7 @@ void playGame(int framesToMove, int shootingCooldown) {
         b.lives = 0;
       }
     }
-    if (cooldown == framesToMove) {
+    if (cooldown == framesToMove - (round * 5)) {
       a.moveAlien();
     }
   }
@@ -391,15 +446,18 @@ void playGame(int framesToMove, int shootingCooldown) {
 
   if (alienList.isEmpty()) {
     renewGame();
+    round++;
   }
   // how long it takes for the aliens to move, affected by difficulty
-  if (cooldown == framesToMove) {
+  if (cooldown == framesToMove - (round * 5)) {
     cooldown = 0;
   }
 }
 
 void resetGame() {
   // removing all aliens from the list, assuming there are
+  shooter1.lives = 3;
+  round = 0;
   shootingCooldown = 0;
   cooldown = 0;
   alienList.clear();
@@ -411,7 +469,6 @@ void resetGame() {
   // refreshing with new aliens
   for (int i = 0; i < 5; i++) {
     for (int i2 = 0; i2 < 11; i2++) {
-
       if (i == 0) {
         alienList.add(new Alien(i2 * 100 + 50, i * 75 + 25, "squid"));
       } else if (i == 1 || i == 2) {
@@ -436,7 +493,6 @@ void resetGame() {
 
 void renewGame() {
   // removing all aliens from the list, assuming there are
-  shooter1.lives = 3;
   shootingCooldown = 0;
   cooldown = 0;
   alienList.clear();
@@ -454,5 +510,15 @@ void renewGame() {
         alienList.add(new Alien(i2 * 100 + 50, i * 75 + 25, "octopus"));
       }
     }
+  }
+}
+
+void buyItem(int price, String cosmeticName, Button buyButton) {
+  if (totalPoints >= price) {
+    cosmeticUnlocked.put(cosmeticName, true);
+    totalPoints -= price;
+    buyButton.text = "UNLOCKED";
+    currentTrail = cosmeticName;
+    System.out.println(currentTrail);
   }
 }

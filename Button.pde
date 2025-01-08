@@ -43,7 +43,7 @@ public class Button {
     }
   }
   
-  public boolean checkScreen(Screen buttonScreen /* enter what screen the button is */) {
+  protected boolean checkScreen(Screen buttonScreen /* enter what screen the button is */) {
     // prevents clicking nonexistent button on different screens
     if(screen == buttonScreen) {
       return true;
@@ -52,7 +52,7 @@ public class Button {
     }
   }
   
-  public boolean activateButton(Screen buttonScreen) {
+  protected boolean activateButton(Screen buttonScreen) {
     // a shortcut so I don't need to call checkScreen() and mouseOverButton() everytime I create a new button
     if (this.mouseOverButton() && this.checkScreen(buttonScreen)) {
       return true;

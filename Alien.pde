@@ -2,7 +2,7 @@ public class Alien {
   float x, y, w, h, dx, dy;
   String type;
   boolean shooting = false;
-  PImage octopusStatic, octopusShooting, squidStatic, squidShooting, crabStatic, crabShooting, redExplosion;
+  PImage octopusStatic, octopusShooting, squidStatic, squidShooting, crabStatic, crabShooting, redExplosion, blueExplosion, greenExplosion;
   int explosionDuration = 0;
   boolean death = false;
   Alien(float x, float y, String type) {
@@ -18,7 +18,9 @@ public class Alien {
     squidShooting = loadImage("SquidShooting.png");
     crabStatic = loadImage("CrabStatic.png");
     crabShooting = loadImage("CrabShooting.png");
-    redExplosion = loadImage("GreenExplosion.png");
+    redExplosion = loadImage("RedExplosion.png");
+    greenExplosion = loadImage("GreenExplosion.png");
+    blueExplosion = loadImage("BlueExplosion.png");
   }
   
   public void drawAlien() {
@@ -57,7 +59,17 @@ public class Alien {
     } else {
       w = 32;
       h = 32;
-      image(redExplosion, x, y);
+      switch (currentEffect) {
+        case "Red Explosion Effect":
+          image(redExplosion, x, y);
+          break;
+        case "Blue Explosion Effect":
+          image(blueExplosion, x, y);
+          break;
+        case "Green Explosion Effect":
+          image(greenExplosion, x, y);
+          break;      
+      }
       explosionDuration++;
       if (explosionDuration >= 60) {
         alienList.remove(this);  
@@ -90,7 +102,7 @@ public class Alien {
     } else if (type == "octopus") {
       pointsGained += int(10 * screen.DIFFMULT);
     }
-    if (cosmeticUnlocked.get("Red Explosion Effect") && explosionDuration <= 60) {
+    if (currentEffect != null && explosionDuration <= 60) {
       death = true;
     } else {
       alienList.remove(this);
