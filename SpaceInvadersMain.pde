@@ -7,6 +7,7 @@ int bulletBoost = 1;
 int powerTimer = 0;
 int pointsGained = 0;
 int round = 0;
+ArrayList<BuyButton> explosionEffects = new ArrayList<>();
 PImage redExplosionDemo, blueExplosionDemo, greenExplosionDemo;
 boolean moveDown = false;
 PFont pixelFont;
@@ -27,10 +28,10 @@ Button mediumButton = new Button(600, 400, 250, 100, "MEDIUM");
 Button hardButton = new Button(600, 550, 200, 100, "HARD");
 Button backButton = new Button(1100, 750, 100, 50, "BACK");
 Button cosmeticButton = new Button(600, 400, 300, 100, "COSMETICS");
-Button confettiBuyButton = new Button(300, 500, 300, 100, "2000");
-Button redExplosionBuyButton = new Button(300, 500, 250, 100, "1000");
-Button blueExplosionBuyButton = new Button(600, 500, 250, 100, "1500");
-Button greenExplosionBuyButton = new Button(900, 500, 250, 100, "1500");
+BuyButton confettiBuyButton = new BuyButton(300, 500, 300, 100, "2000", "Confetti Trail", "trail");
+BuyButton redExplosionBuyButton = new BuyButton(250, 500, 325, 100, "1000", "Red Explosion Effect", "effect");
+BuyButton blueExplosionBuyButton = new BuyButton(600, 500, 325, 100, "1500", "Blue Explosion Effect", "effect");
+BuyButton greenExplosionBuyButton = new BuyButton(950, 500, 325, 100, "1500", "Green Explosion Effect", "effect");
 Button nextButton = new Button(1100, 650, 100, 50, "NEXT");
 Button inventoryButton = new Button(600, 550, 350, 100, "INVENTORY");
 String currentTrail = null;
@@ -52,6 +53,9 @@ public void setup() {
   redExplosionDemo = loadImage("RedExplosion.png");
   blueExplosionDemo = loadImage("BlueExplosion.png");
   greenExplosionDemo = loadImage("GreenExplosion.png");
+  explosionEffects.add(redExplosionBuyButton);
+  explosionEffects.add(blueExplosionBuyButton);
+  explosionEffects.add(greenExplosionBuyButton);
 }
 
 public void draw() {
@@ -141,16 +145,17 @@ public void draw() {
     text("Cosmetics Shop", 600, 125);
     textSize(20);
     text("Total Points: " + totalPoints, 150, 750);
-    text("Red Explosion\nEffect", 300, 350);
-    text("Blue Explosion\nEffect", 600, 350);
-    text("Green Explosion\nEffect", 900, 350);
+    text("Red Explosion\nEffect", redExplosionBuyButton.x, 350);
+    text("Blue Explosion\nEffect", blueExplosionBuyButton.x, 350);
+    text("Green Explosion\nEffect", greenExplosionBuyButton.x, 350);
     backButton.drawButton();
     redExplosionBuyButton.drawButton();
     blueExplosionBuyButton.drawButton();
     greenExplosionBuyButton.drawButton();
-    image(redExplosionDemo, 300, 400);
-    image(blueExplosionDemo, 600, 400);
-    image(greenExplosionDemo, 900, 400);
+    image(redExplosionDemo, redExplosionBuyButton.x, 400);
+    image(blueExplosionDemo, blueExplosionBuyButton.x, 400);
+    image(greenExplosionDemo, greenExplosionBuyButton.x, 400);
+    break;
   case INVENTORY:
     fill(255);
     textSize(75);
@@ -203,8 +208,8 @@ void mousePressed() {
     }
     break;
   case COSMETICS:
-    if (confettiBuyButton.activateButton(Screen.COSMETICS) && !cosmeticUnlocked.get("Confetti Trail")) {
-      buyItem(2000, "Confetti Trail", confettiBuyButton);
+    if (confettiBuyButton.activateButton(Screen.COSMETICS)) {
+      confettiBuyButton.buyItem(2000);
     }
     if (nextButton.activateButton(Screen.COSMETICS)) {
       prevScreen.add(screen);
@@ -252,17 +257,12 @@ void mousePressed() {
     }
     break;
   case COSMETICS_2:
-    if (redExplosionBuyButton.activateButton(Screen.COSMETICS_2) && !cosmeticUnlocked.get("Red Explosion Effect")) {
-      buyItem(1000, "Red Explosion Effect", redExplosionBuyButton);
-      currentEffect = "Red Explosion Effect";
-    }
-    if (blueExplosionBuyButton.activateButton(Screen.COSMETICS_2) && !cosmeticUnlocked.get("Blue Explosion Effect")) {
-      buyItem(1500, "Blue Explosion Effect", blueExplosionBuyButton);
-      currentEffect = "Blue Explosion Effect";
-    }
-    if (greenExplosionBuyButton.activateButton(Screen.COSMETICS_2) && !cosmeticUnlocked.get("Green Explosion Effect")) {
-      buyItem(1500, "Green Explosion Effect", greenExplosionBuyButton);
-      currentEffect = "Green Explosion Effect";
+    if (redExplosionBuyButton.activateButton(Screen.COSMETICS_2)) {
+      redExplosionBuyButton.buyItem(1000);
+    } else if (blueExplosionBuyButton.activateButton(Screen.COSMETICS_2)) {
+      blueExplosionBuyButton.buyItem(1500);
+    } else if (greenExplosionBuyButton.activateButton(Screen.COSMETICS_2)) {
+      greenExplosionBuyButton.buyItem(1500);
     }
     break;
   case INVENTORY:
@@ -513,13 +513,5 @@ void renewGame() {
         alienList.add(new Alien(i2 * 100 + 50, i * 75 + 25, "octopus"));
       }
     }
-  }
-}
-
-void buyItem(int price, String cosmeticName, Button buyButton) {
-  if (totalPoints >= price) {
-    cosmeticUnlocked.put(cosmeticName, true);
-    totalPoints -= price;
-    buyButton.text = "UNLOCKED";
   }
 }
