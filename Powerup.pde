@@ -74,7 +74,9 @@ public class Powerup {
         bulletBoost = 3;
         break;
       case 3:
-        shooter1.lives++;
+        if (shooter1.lives < 6) {
+          shooter1.lives++;
+        }
         break;
       default:
         System.out.println("Error! Type dosn't exist: " + type);
