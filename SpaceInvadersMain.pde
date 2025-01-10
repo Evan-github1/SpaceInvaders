@@ -269,7 +269,7 @@ void playGame(int framesToMove, int shootingCooldown) {
     waitToSwitch = 0;
     screen = Screen.GAME_OVER;
   }
-  if (int(random(1, 500 * screen.DIFFMULT)) == 1) {
+  if (int(random(1, 400 * screen.DIFFMULT)) == 1) {
     powerupList.add(new Powerup(int(random(15, 1190)), int(random(15, 500))));
   }
   for (int i = powerupList.size() - 1; i >= 0; i--) {
@@ -304,6 +304,11 @@ void playGame(int framesToMove, int shootingCooldown) {
   for (int i = 0; i < alienList.size(); i++) {
     Alien a = alienList.get(i);
     a.drawAlien();
+    a.lastHit++;
+    println(alienList.get(0).alienRage() + ", " + alienList.get(0).lastHit + ", " + alienList.get(0).rageTimer  + ", cooldown: " + cooldown);
+    if (a.alienRage()) {
+      alienList.get(i).rageTimer++;
+    }
     if (a.y + 75 >= shooter1.y && !a.death) {
       screen = Screen.GAME_OVER;
     }
@@ -338,7 +343,9 @@ void playGame(int framesToMove, int shootingCooldown) {
         b.lives = 0;
       }
     }
-    if (cooldown == framesToMove - (round * 5)) {
+    if (a.alienRage() && (cooldown >= int((framesToMove - (round * 5))/2))) {
+      a.moveAlien();
+    } else if (cooldown >= framesToMove - (round * 5)) {
       a.moveAlien();
     }
   }
@@ -349,6 +356,9 @@ void playGame(int framesToMove, int shootingCooldown) {
     a.shoot();
     if (a.hitLaser(shooter1.x, shooter1.y, shooter1.w, shooter1.h)) {
       shooter1.lives--;
+      for (int j = 0; j < alienList.size(); j++) {
+        alienList.get(j).resetRage();
+      }
       alienLaserList.remove(i);
     }
     if (a.y + a.h/2 >= 800) {
@@ -439,8 +449,12 @@ void playGame(int framesToMove, int shootingCooldown) {
     round++;
   }
   // how long it takes for the aliens to move, affected by difficulty
-  if (cooldown == framesToMove - (round * 5)) {
-    cooldown = 0;
+  for (int i = 0; i < alienList.size(); i++) {
+    if (alienList.get(i).alienRage() && (cooldown >= int((framesToMove - (round * 5))/2))) {
+      cooldown = 0;
+    } else if (cooldown >= framesToMove - (round * 5)) {
+      cooldown = 0;
+    }
   }
 }
 

@@ -4,6 +4,9 @@ public class Alien {
   boolean shooting = false;
   PImage octopusStatic, octopusShooting, squidStatic, squidShooting, crabStatic, crabShooting, redExplosion, blueExplosion, greenExplosion;
   int explosionDuration = 0;
+  int lastHit = 0;
+  int rageTimer = 0;
+  int prevLives = shooter1.lives;
   boolean death = false;
   Alien(float x, float y, String type) {
     this.x = x;
@@ -107,6 +110,23 @@ public class Alien {
     } else {
       alienList.remove(this);
     }
-    
+  }
+  
+  boolean alienRage() {
+    if (rageTimer == 420) {
+      rageTimer = 0;
+      lastHit = 0;
+      prevLives = shooter1.lives;
+      return false;
+    } else if (lastHit >= 1020 && prevLives <= shooter1.lives) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  
+  void resetRage() {
+    prevLives = shooter1.lives;
+    lastHit = 0;
   }
 }

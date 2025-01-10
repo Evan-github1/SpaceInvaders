@@ -1,7 +1,7 @@
 public class Powerup {
-  PImage killPowerup, repairBarriersPowerup, bulletBoostPowerup, healPowerup;
+  PImage killPowerup, repairBarriersPowerup, bulletBoostPowerup, healPowerup, calmPowerup;
   float x, y, wh;
-  int type = int(random(0, 4));
+  int type = int(random(0, 5));
   int lifeSpan = 0;
   int powerLasting = 0;
   Powerup(float x, float y) {
@@ -12,6 +12,7 @@ public class Powerup {
     repairBarriersPowerup = loadImage("repairBarriers.png");
     bulletBoostPowerup = loadImage("bulletBoost.png");
     healPowerup = loadImage("heal.png");
+    calmPowerup = loadImage("calmAliens.png");
   }
   
   public void drawPowerup() {
@@ -30,6 +31,9 @@ public class Powerup {
         break;
       case 3:
         image(healPowerup, x, y);
+        break;
+      case 4:
+        image(calmPowerup, x, y);
         break;
       default:
         System.out.println("Error! Type doesn't exist: " + type); 
@@ -76,6 +80,11 @@ public class Powerup {
       case 3:
         if (shooter1.lives < 6) {
           shooter1.lives++;
+        }
+        break;
+      case 4:
+        for (int i = 0; i < alienList.size(); i++) {
+          alienList.get(i).resetRage();
         }
         break;
       default:
