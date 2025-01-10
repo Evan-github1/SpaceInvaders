@@ -10,7 +10,7 @@ public class Shooter {
     g = 206;
     b = 235;
     dx = 0;
-    lives = 3;
+    lives = 2;
   }
   
   public void drawShooter() {

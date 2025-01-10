@@ -13,11 +13,11 @@ public class BuyButton extends Button {
     }
     
     if (cosmeticUnlocked.get(cosmeticName)) {
+      this.text = "EQUIPPED";
       if (type == "trail") {
         currentTrail = cosmeticName;
       } else if (type == "effect") {
         currentEffect = cosmeticName;
-        this.text = "EQUIPPED";
         for (int i = 0; i < explosionEffects.size(); i++) {
           if (cosmeticUnlocked.get(explosionEffects.get(i).cosmeticName) && explosionEffects.get(i).cosmeticName != cosmeticName) {
             explosionEffects.get(i).text = "UNEQUIPPED";

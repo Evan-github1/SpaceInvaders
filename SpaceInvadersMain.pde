@@ -33,7 +33,6 @@ BuyButton redExplosionBuyButton = new BuyButton(250, 500, 325, 100, "1000", "Red
 BuyButton blueExplosionBuyButton = new BuyButton(600, 500, 325, 100, "1500", "Blue Explosion Effect", "effect");
 BuyButton greenExplosionBuyButton = new BuyButton(950, 500, 325, 100, "1500", "Green Explosion Effect", "effect");
 Button nextButton = new Button(1100, 650, 100, 50, "NEXT");
-Button inventoryButton = new Button(600, 550, 350, 100, "INVENTORY");
 String currentTrail = null;
 String currentEffect = null;
 
@@ -76,7 +75,6 @@ public void draw() {
     text("Space Invaders", 600, 125);
     playButton.drawButton();
     cosmeticButton.drawButton();
-    inventoryButton.drawButton();
     break;
 
   case COSMETICS:
@@ -156,12 +154,6 @@ public void draw() {
     image(blueExplosionDemo, blueExplosionBuyButton.x, 400);
     image(greenExplosionDemo, greenExplosionBuyButton.x, 400);
     break;
-  case INVENTORY:
-    fill(255);
-    textSize(75);
-    text("INVENTORY", 600, 125);
-    backButton.drawButton();
-    break;
 }
 }
 
@@ -202,9 +194,6 @@ void mousePressed() {
     } else if (cosmeticButton.activateButton(Screen.MAIN_MENU)) {
       prevScreen.add(screen);
       screen = Screen.COSMETICS;
-    } else if (inventoryButton.activateButton(Screen.MAIN_MENU)) {
-      prevScreen.add(screen);
-      screen = Screen.INVENTORY;
     }
     break;
   case COSMETICS:
@@ -264,8 +253,6 @@ void mousePressed() {
     } else if (greenExplosionBuyButton.activateButton(Screen.COSMETICS_2)) {
       greenExplosionBuyButton.buyItem(1500);
     }
-    break;
-  case INVENTORY:
     break;
   }
 }
@@ -459,7 +446,7 @@ void playGame(int framesToMove, int shootingCooldown) {
 
 void resetGame() {
   // removing all aliens from the list, assuming there are
-  shooter1.lives = 3;
+  shooter1.lives = 2;
   round = 0;
   shootingCooldown = 0;
   cooldown = 0;

@@ -7,8 +7,7 @@ public enum Screen {
   TWO_PLAYER_MODE(1),
   GAME_OVER(1),
   DIFFICULTY(1),
-  COSMETICS_2(1),
-  INVENTORY(1);
+  COSMETICS_2(1);
   
   final float DIFFMULT;
   Screen(float diffMult) {
