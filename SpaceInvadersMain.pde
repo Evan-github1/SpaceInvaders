@@ -4,7 +4,9 @@ int waitToSwitch = 0;
 int shootingCooldown = 0;
 int totalPoints = 0;
 int bulletBoost = 1;
-int powerTimer = 0;
+int speedBoost = 1;
+int speedBoostTimer = 0;
+int bulletBoostTimer = 0;
 int pointsGained = 0;
 int round = 0;
 ArrayList<BuyButton> explosionEffects = new ArrayList<>();
@@ -61,11 +63,18 @@ public void draw() {
   background(0);
   cooldown++;
   if (bulletBoost != 1) {
-    powerTimer++;
+    bulletBoostTimer++;
   }
-  if (powerTimer >= 600) {
+  if (bulletBoostTimer >= 600) {
     bulletBoost = 1;
-    powerTimer = 0;
+    bulletBoostTimer = 0;
+  }
+  if (speedBoost != 1) {
+    speedBoostTimer++;
+  }
+  if (speedBoostTimer >= 600) {
+    speedBoost = 1;
+    speedBoostTimer = 0;
   }
   switch (screen) {
   case MAIN_MENU:
@@ -301,11 +310,10 @@ void playGame(int framesToMove, int shootingCooldown) {
   }
 
 
-  for (int i = 0; i < alienList.size(); i++) {
+  for (int i = alienList.size() - 1; i >= 0; i++) {
     Alien a = alienList.get(i);
     a.drawAlien();
-    a.lastHit++;
-    println(alienList.get(0).alienRage() + ", " + alienList.get(0).lastHit + ", " + alienList.get(0).rageTimer  + ", cooldown: " + cooldown);
+    a.lastHit--;
     if (a.alienRage()) {
       alienList.get(i).rageTimer++;
     }
@@ -416,6 +424,9 @@ void playGame(int framesToMove, int shootingCooldown) {
 
       if (s.hitLaser(a.x, a.y, a.w, a.h) && !a.death) {
         a.killAlien();
+        if (int(random(1, 4)) == 1) {
+          powerupList.add(new Powerup(a.x, a.y));
+        }
         a.death = true;
         shooterLaserList.remove(i);
       }

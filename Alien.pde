@@ -4,7 +4,7 @@ public class Alien {
   boolean shooting = false;
   PImage octopusStatic, octopusShooting, squidStatic, squidShooting, crabStatic, crabShooting, redExplosion, blueExplosion, greenExplosion;
   int explosionDuration = 0;
-  int lastHit = 0;
+  int lastHit = 1020;
   int rageTimer = 0;
   int prevLives = shooter1.lives;
   boolean death = false;
@@ -113,12 +113,17 @@ public class Alien {
   }
   
   boolean alienRage() {
+    if (lastHit <= 300 && lastHit >= 0) {
+      textAlign(CENTER);
+      fill(139, 0, 0);
+      textSize(75);
+      text("Alien Rage in " + int(lastHit/60), 600, 125);
+    }
     if (rageTimer == 420) {
       rageTimer = 0;
-      lastHit = 0;
-      prevLives = shooter1.lives;
+      resetRage();
       return false;
-    } else if (lastHit >= 1020 && prevLives <= shooter1.lives) {
+    } else if (lastHit <= 0 && prevLives <= shooter1.lives) {
       return true;
     } else {
       return false;
@@ -127,6 +132,6 @@ public class Alien {
   
   void resetRage() {
     prevLives = shooter1.lives;
-    lastHit = 0;
+    lastHit = 1020;
   }
 }

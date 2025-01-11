@@ -3,7 +3,7 @@ public class ShooterLaser extends Laser {
   
   ShooterLaser(float x, float y) {
     super(x, y);
-    dy = -5;
+    dy = -5 * speedBoost;
     w = 5 * bulletBoost;
     h = 10 * bulletBoost;
   }
