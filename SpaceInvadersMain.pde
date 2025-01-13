@@ -310,7 +310,7 @@ void playGame(int framesToMove, int shootingCooldown) {
   }
 
 
-  for (int i = alienList.size() - 1; i >= 0; i++) {
+  for (int i = alienList.size() - 1; i >= 0; i--) {
     Alien a = alienList.get(i);
     a.drawAlien();
     a.lastHit--;
