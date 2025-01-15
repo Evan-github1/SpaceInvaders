@@ -35,6 +35,7 @@ public class Button {
     }
   }
 
+  // checks if mouse is over button
   public boolean mouseOverButton() {
     if (mouseX <= x + w/2 && mouseX >= x - w/2 && mouseY >= y - h/2 && mouseY <= y + h/2) {
       return true;
@@ -42,7 +43,7 @@ public class Button {
       return false;
     }
   }
-  
+ 
   protected boolean checkScreen(Screen buttonScreen /* enter what screen the button is */) {
     // prevents clicking nonexistent button on different screens
     if(screen == buttonScreen) {

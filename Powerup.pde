@@ -1,6 +1,7 @@
 public class Powerup {
   PImage killPowerup, repairBarriersPowerup, bulletBoostPowerup, healPowerup, calmPowerup, speedBoostPowerup;
   float x, y, wh;
+  // random type of powerup
   int type = int(random(0, 6));
   int lifeSpan = 0;
   int powerLasting = 0;
@@ -20,6 +21,7 @@ public class Powerup {
     lifeSpan++;
     rectMode(CENTER);
     noStroke();
+    // draws differently based on type of powerup
     switch (type) {
       case 0:
         image(killPowerup, x, y);
@@ -79,19 +81,23 @@ public class Powerup {
         }
         break;
       case 2:
+        // increases bullet size
         bulletBoost = 3;
         break;
       case 3:
+        // increases shooter lives
         if (shooter1.lives < 6) {
           shooter1.lives++;
         }
         break;
       case 4:
+        // calms alien/resets alien rage
         for (int i = 0; i < alienList.size(); i++) {
           alienList.get(i).resetRage();
         }
         break;
       case 5:
+        // increases bullet speed
         speedBoost = 3;
         break;
       default:

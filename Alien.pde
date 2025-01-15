@@ -15,6 +15,7 @@ public class Alien {
     dy = 25;
     this.type = type;
     imageMode(CENTER);
+    // loading all images
     octopusStatic = loadImage("OctopusStatic.png");
     octopusShooting = loadImage("OctopusShooting.png");
     squidStatic = loadImage("SquidStatic.png");
@@ -27,6 +28,7 @@ public class Alien {
   }
   
   public void drawAlien() {
+    // creating alien based on type
     if (!death) {
       switch (type) {
         case "squid":
@@ -60,6 +62,7 @@ public class Alien {
           System.out.println("Error! Incorrect type entered: " + type);
       }
     } else {
+      // death explosion effects
       w = 32;
       h = 32;
       switch (currentEffect) {
@@ -80,6 +83,7 @@ public class Alien {
     }
   }
   
+  // checking if alien hits edge
   public boolean edgeCheck() {
     if (x == 1170 || x == 30 && !death) {
       return true;  
@@ -97,6 +101,7 @@ public class Alien {
     }
   }
   
+  // removes alien from list
   public void killAlien() {
     if (type == "squid") {
       pointsGained += int(40 * screen.DIFFMULT);
@@ -112,6 +117,7 @@ public class Alien {
     }
   }
   
+  // alien becomes quicker once player hasn't been hit in a while
   boolean alienRage() {
     if (lastHit <= 300 && lastHit >= 0) {
       textAlign(CENTER);

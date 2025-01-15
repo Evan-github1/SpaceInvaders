@@ -20,6 +20,7 @@ public class Shooter {
     rect(x, y, w, h);
     rect(x, y - h/2 - h/8, w/8, h/4);
     x += dx;
+    // prevents shooter from going out of bounds
     x = constrain(x, w/2, 1200 - w/2);
   }
  

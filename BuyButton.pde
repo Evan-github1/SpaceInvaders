@@ -6,6 +6,7 @@ public class BuyButton extends Button {
     this.type = type;
   }
   
+  // creates pricing and switches current equipped
   void buyItem(int price) {
     if (totalPoints >= price && !cosmeticUnlocked.get(cosmeticName)) {
       cosmeticUnlocked.put(cosmeticName, true);
@@ -16,6 +17,11 @@ public class BuyButton extends Button {
       this.text = "EQUIPPED";
       if (type == "trail") {
         currentTrail = cosmeticName;
+        for (int i = 0; i < trailEffects.size(); i++) {
+          if (cosmeticUnlocked.get(trailEffects.get(i).cosmeticName) && trailEffects.get(i).cosmeticName != cosmeticName) {
+            trailEffects.get(i).text = "UNEQUIPPED";
+          }
+        }
       } else if (type == "effect") {
         currentEffect = cosmeticName;
         for (int i = 0; i < explosionEffects.size(); i++) {

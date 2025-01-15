@@ -1,3 +1,4 @@
+// class only for confetti trail effect
 public class Particle {
   float x, y, w, h;
   int downCurv = int(random(10, 501));
@@ -6,6 +7,7 @@ public class Particle {
   Particle(float x, float y) {
     this.x = x;
     this.y = y;
+    // randomizes color
     for (int i = 0; i < rgb.length; i++) {
       rgb[i] = (int(random(0, 256)));
     }
@@ -17,6 +19,7 @@ public class Particle {
     rectMode(CENTER);
     fill(rgb[0], rgb[1], rgb[2]);
     x += dx;
+    // movement downwards is random
     y += 1 + (x * 1/downCurv);
     rect(x, y, w, h);
     w -= .1;

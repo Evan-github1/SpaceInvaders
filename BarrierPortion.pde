@@ -12,16 +12,13 @@ public class BarrierPortion {
   }
   
   void drawPortion() {
-    /*
-    | | |
-    | | |
-    |   |
-    */
+    // barrier color darkens as lives decrease
     rectMode(CENTER);
     fill(255 - ((LIVES - lives) * 40));
     rect(x, y, 40, 30);
   }
   
+  // bounding box
   boolean hitPortion(float ex, float ey, float ew, float eh) {
     // e for entity (lasers)
     if (x - w/2 <= ex + ew/2 && x + w/2 >= ex - ew/2 && y + h/2 >= ey - eh/2 && y - h/2 <= ey + eh/2) {
