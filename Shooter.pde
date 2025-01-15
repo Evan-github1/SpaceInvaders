@@ -4,7 +4,7 @@ public class Shooter {
   Shooter(float x, float y, float w, float h) {
     this.x = x;
     this.y = y;
-    this.w = w;
+    this.w = w; 
     this.h = h;
     r = 135;
     g = 206;
